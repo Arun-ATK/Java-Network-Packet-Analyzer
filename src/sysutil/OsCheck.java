@@ -1,3 +1,5 @@
+package sysutil;
+
 import java.util.Locale;
 
 /**
@@ -20,7 +22,7 @@ public class OsCheck {
      * detected the operating system from the os.name System property and cache
      * the result
      *
-     * RETURN VALUE - the operating system detected
+     * @return the operating system detected
      */
     public static OSType getOperatingSystemType() {
         if (detectedOS == null) {

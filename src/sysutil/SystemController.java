@@ -1,6 +1,10 @@
 package sysutil;
 
+import capture.JNetPcapHandler;
+import capture.PacketCapturer;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SystemController {
 
@@ -9,6 +13,8 @@ public class SystemController {
 
         OsCheck.OSType osType = OsCheck.getOperatingSystemType();
         System.out.println("OS: " + osType);
+
+        StringBuilder errbuf = new StringBuilder();
 
         if (osType == OsCheck.OSType.Windows) {
             try {
@@ -44,6 +50,6 @@ public class SystemController {
         System.out.println("Issued WinPcap stop cmd");
     }
 
-    private static void startLibPcap() {}
-    private static void stopLibPcap() {}
+//    private static void startLibPcap() {}
+//    private static void stopLibPcap() {}
 }

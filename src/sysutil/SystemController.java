@@ -2,9 +2,9 @@ package sysutil;
 
 import capture.JNetPcapHandler;
 import capture.PacketCapturer;
+import ui.TempUI;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class SystemController {
 
@@ -14,28 +14,8 @@ public class SystemController {
         OsCheck.OSType osType = OsCheck.getOperatingSystemType();
         System.out.println("OS: " + osType);
 
-        StringBuilder errbuf = new StringBuilder();
-
-        if (osType == OsCheck.OSType.Windows) {
-            try {
-                startWinPcap();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            try {
-               stopWinPcap();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        else if (osType == OsCheck.OSType.Linux) {
-            // TODO: Try in linux installation
-            System.out.println("Linux not supported yet!");
-        }
-        else {
-            System.out.println("Unknown operating system");
-        }
+        ui.TempUI tui = new TempUI();
+        tui.startUI();
     }
 
     private static void startWinPcap() throws IOException {
@@ -50,6 +30,20 @@ public class SystemController {
         System.out.println("Issued WinPcap stop cmd");
     }
 
-//    private static void startLibPcap() {}
-//    private static void stopLibPcap() {}
+    // Temporary wrappers to starting and stopping winpcap
+    public static void startWin() {
+        try {
+            startWinPcap();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void stopWin() {
+        try {
+            stopWinPcap();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

@@ -8,7 +8,7 @@ public abstract class PacketCapturer {
     public abstract void openPcapFile(String filename);
     public abstract void closePcapFile(String filename);
 
-    public abstract void openInterface(String interfaceName);
+    public abstract void openInterface(int interfaceNum);
 
     public abstract void getNextPacket();
 

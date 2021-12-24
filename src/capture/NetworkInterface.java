@@ -1,6 +1,10 @@
 package capture;
 
-public record NetworkInterface(String name, String description) {
+public record NetworkInterface(int id, String name, String description) {
+
+    public int getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

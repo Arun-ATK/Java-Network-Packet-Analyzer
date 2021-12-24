@@ -41,6 +41,7 @@ public class TempUI {
                 nis = CaptureController.getInterfaces();
 
                 for (capture.NetworkInterface ni : nis) {
+                    System.out.println("INTERFACE ID: " + ni.getId());
                     System.out.println("Name: " + ni.getName());
                     System.out.println("Description: " + ni.getDescription());
                     System.out.println("----");

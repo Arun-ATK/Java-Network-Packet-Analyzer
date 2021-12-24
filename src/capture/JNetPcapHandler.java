@@ -1,8 +1,6 @@
 package capture;
 
-import org.jnetpcap.Pcap;
-import org.jnetpcap.PcapHeader;
-import org.jnetpcap.PcapIf;
+import org.jnetpcap.*;
 import org.jnetpcap.nio.JBuffer;
 
 import java.util.ArrayList;
@@ -25,10 +23,11 @@ public class JNetPcapHandler extends PacketCapturer {
         else {
             System.out.println(interfaces.size() + " interfaces found!");
 
-            for (PcapIf anInterface : interfaces) {
+            for (int i = 0; i < interfaces.size(); ++i) {
                 networkInterfaces.add(new NetworkInterface(
-                        anInterface.getName(),
-                        anInterface.getDescription()));
+                        i,
+                        interfaces.get(i).getName(),
+                        interfaces.get(i).getDescription()));
             }
         }
 
@@ -55,12 +54,19 @@ public class JNetPcapHandler extends PacketCapturer {
 
         Pcap pcap = Pcap.openLive(interfaceName, snaplen, flags, timeout, errbuf);
 
-        PcapHeader header = new PcapHeader();
-        JBuffer buffer = new JBuffer(snaplen);
-        int stat = pcap.nextEx(header, buffer);
+//        PcapHeader header = new PcapHeader();
+//        JBuffer buffer = new JBuffer(snaplen);
+//        int stat = pcap.nextEx(header, buffer);
+
+        PcapPktHdr pktHdr = new PcapPktHdr();
+        PcapPktBuffer pktBuffer = new PcapPktBuffer();
+        int stat = pcap.nextEx(pktHdr, pktBuffer);
 
         if (stat == 1) {
-            System.out.println(buffer);
+            System.out.println(pktHdr.getCaplen());
+        }
+        else {
+            System.out.println("Status: " + stat);
         }
 
         pcap.close();

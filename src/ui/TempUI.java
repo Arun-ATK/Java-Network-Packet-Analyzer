@@ -36,6 +36,7 @@ public class TempUI {
 
             case 2:
                 SystemController.stopWin();
+                break;
 
             case 3:
                 nis = CaptureController.getInterfaces();
@@ -51,6 +52,7 @@ public class TempUI {
             case 4:
                 System.out.print("Enter interface number: ");
                 CaptureController.startCapture(input.nextInt());
+                break;
 
             default:
                 System.out.println("Invalid option!\n");

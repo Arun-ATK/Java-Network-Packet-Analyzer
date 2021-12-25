@@ -1,12 +1,16 @@
 package capture;
 
 import org.jnetpcap.*;
-import org.jnetpcap.nio.JBuffer;
+import org.jnetpcap.packet.PcapPacketHandler;
 
+import java.io.PrintStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JNetPcapHandler extends PacketCapturer {
     ArrayList<PcapIf> interfaces;
+    Pcap pcap;
 
 
     @Override
@@ -48,34 +52,34 @@ public class JNetPcapHandler extends PacketCapturer {
     public void openInterface(int interfaceNum) {
         String interfaceName = interfaces.get(interfaceNum).getName();
         int snaplen = 64 * 1024;
-        int flags = Pcap.MODE_PROMISCUOUS;
-        int timeout = 10 * 1000;
+        int promiscuous = Pcap.MODE_PROMISCUOUS;
         StringBuilder errbuf = new StringBuilder();
 
-        Pcap pcap = Pcap.openLive(interfaceName, snaplen, flags, timeout, errbuf);
+        final int seconds = 5;
+        int timeout = seconds * 1000;
 
-//        PcapHeader header = new PcapHeader();
-//        JBuffer buffer = new JBuffer(snaplen);
-//        int stat = pcap.nextEx(header, buffer);
+        pcap = Pcap.openLive(interfaceName, snaplen, promiscuous, timeout, errbuf);
 
-        PcapPktHdr pktHdr = new PcapPktHdr();
-        PcapPktBuffer pktBuffer = new PcapPktBuffer();
-        int stat = pcap.nextEx(pktHdr, pktBuffer);
-
-        if (stat == 1) {
-            System.out.println(pktHdr.getCaplen());
-        }
-        else {
-            System.out.println("Status: " + stat);
-        }
-
-        pcap.close();
-
+        getNextPacket();
     }
 
+    // TODO: Replace deprecated method handler
     @Override
     public void getNextPacket() {
+        PcapHandler handler = new PcapHandler() {
+            @Override
+            public void nextPacket(Object o, long seconds, int usec, int caplen, int len, ByteBuffer byteBuffer) {
+                PrintStream out = (PrintStream) o;
 
+                out.println("Packet captured on: " + new Date(seconds * 1000));
+            }
+        };
+
+        int cnt = 10;
+        PrintStream out = System.out;
+        pcap.loop(cnt, handler, out);
+
+        pcap.close();
     }
 
     @Override

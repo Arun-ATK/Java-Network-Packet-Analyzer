@@ -1,62 +1,43 @@
 package ui;
 
+import org.jnetpcap.nio.JBuffer;
+
 import sysutil.SystemController;
 import capture.CaptureController;
 import capture.NetworkInterface;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class TempUI {
+public class TempUI extends JFrame {
+
     public void startUI() {
-        Scanner input = new Scanner(System.in);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
-        ArrayList<NetworkInterface> nis;
+        // Frame contents...
+        JButton startWinPcapButton = new JButton("Start WinPcap");
+        JButton stopWinPcapButton = new JButton("Stop WinPcap");
+        JButton getInterfacesButton = new JButton("List interfaces");
 
-        boolean b = true;
-        while (b) {
-            System.out.println("Available actions: ");
-            System.out.println("0) EXIT");
-            System.out.println("1) Start WinPcap");
-            System.out.println("2) Stop WinPcap");
-            System.out.println("3) Get available interfaces");
-            System.out.println("4) Choose interface");
-            System.out.print("Your choice: ");
+        JLabel selectInterfaceLabel = new JLabel("Enter interface number: ");
+        JTextField selectInterfaceTextField = new JTextField();
+        selectInterfaceTextField.setPreferredSize(new Dimension(75, 25));
+        JPanel selectInterfacePanel = new JPanel();
+        selectInterfacePanel.add(selectInterfaceLabel);
+        selectInterfacePanel.add(selectInterfaceTextField);
 
-            int choice = input.nextInt();
+        JButton startCaptureButton = new JButton("Start Capture");
 
-            switch (choice) {
-            case 0:
-                b = false;
-                break;
+        this.add(startWinPcapButton);
+        this.add(stopWinPcapButton);
+        this.add(getInterfacesButton);
+        this.add(selectInterfacePanel);
+        this.add(startCaptureButton);
 
-            case 1:
-                SystemController.startWin();
-                break;
-
-            case 2:
-                SystemController.stopWin();
-                break;
-
-            case 3:
-                nis = CaptureController.getInterfaces();
-
-                for (capture.NetworkInterface ni : nis) {
-                    System.out.println("INTERFACE ID: " + ni.getId());
-                    System.out.println("Name: " + ni.getName());
-                    System.out.println("Description: " + ni.getDescription());
-                    System.out.println("----");
-                }
-                break;
-
-            case 4:
-                System.out.print("Enter interface number: ");
-                CaptureController.startCapture(input.nextInt());
-                break;
-
-            default:
-                System.out.println("Invalid option!\n");
-            }
-        }
+        this.pack();
+        this.setVisible(true);
     }
 }

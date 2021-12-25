@@ -1,10 +1,10 @@
 package capture;
 
 import org.jnetpcap.*;
-import org.jnetpcap.packet.PcapPacketHandler;
 
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -49,8 +49,8 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
-    public void openInterface(int interfaceNum) {
-        String interfaceName = interfaces.get(interfaceNum).getName();
+    public void openInterface(int interfaceID) {
+        String interfaceName = interfaces.get(interfaceID).getName();
         int snaplen = 64 * 1024;
         int promiscuous = Pcap.MODE_PROMISCUOUS;
         StringBuilder errbuf = new StringBuilder();
@@ -71,7 +71,13 @@ public class JNetPcapHandler extends PacketCapturer {
             public void nextPacket(Object o, long seconds, int usec, int caplen, int len, ByteBuffer byteBuffer) {
                 PrintStream out = (PrintStream) o;
 
+                String data = StandardCharsets.UTF_8.decode(byteBuffer).toString();
+                int end = Math.min(data.length(), 25);
+
                 out.println("Packet captured on: " + new Date(seconds * 1000));
+                out.println("Captured Size: " + caplen);
+                out.println("Size on wire: " + len);
+                out.println(data.substring(0, end));
             }
         };
 

@@ -1,15 +1,10 @@
 package ui;
 
-import org.jnetpcap.nio.JBuffer;
-
 import sysutil.SystemController;
 import capture.CaptureController;
-import capture.NetworkInterface;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 public class TempUI extends JFrame {
 
@@ -30,6 +25,33 @@ public class TempUI extends JFrame {
         selectInterfacePanel.add(selectInterfaceTextField);
 
         JButton startCaptureButton = new JButton("Start Capture");
+
+        /*
+         * Adding ActionListeners lambdas to each Button before adding them to the frame
+         * Each ActionListener will process the input data (if any) before calling
+         * an appropriate function in the CaptureController
+         */
+        startWinPcapButton.addActionListener(e -> {
+            System.out.println(e.toString());
+            SystemController.startWin();
+        });
+
+        stopWinPcapButton.addActionListener(e -> {
+            System.out.println(e.toString());
+            SystemController.stopWin();
+        });
+
+        getInterfacesButton.addActionListener(e -> {
+            System.out.println(e.toString());
+            CaptureController.getInterfaces();
+        });
+
+        startCaptureButton.addActionListener(e -> {
+            System.out.println(e.toString());
+
+            int interfaceID = Integer.parseInt(selectInterfaceTextField.getText());
+            CaptureController.startCapture(interfaceID);
+        });
 
         this.add(startWinPcapButton);
         this.add(stopWinPcapButton);

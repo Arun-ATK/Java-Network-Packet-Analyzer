@@ -1,22 +1,22 @@
 package capture;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class CaptureController implements ActionListener {
+public class CaptureController {
     private static final PacketCapturer capturer = new JNetPcapHandler();
 
     public static ArrayList<NetworkInterface> getInterfaces() {
-        return capturer.getNetworkInterfaces();
+        ArrayList<NetworkInterface> interfaces = capturer.getNetworkInterfaces();
+        for (NetworkInterface anInterface : interfaces) {
+            System.out.println("INTERFACE ID: " + anInterface.getId());
+            System.out.println("Interface Name: " + anInterface.getDescription());
+            System.out.println("----");
+        }
+
+        return interfaces;
     }
 
-    public static void startCapture(int interfaceNum) {
-        capturer.openInterface(interfaceNum);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Nothing yet...");
+    public static void startCapture(int interfaceID) {
+        capturer.openInterface(interfaceID);
     }
 }

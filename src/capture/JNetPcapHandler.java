@@ -1,13 +1,15 @@
 package capture;
 
 import org.jnetpcap.*;
+import org.jnetpcap.nio.JMemory;
+import org.jnetpcap.packet.PcapPacket;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class JNetPcapHandler extends PacketCapturer {
     private ArrayList<PcapIf> interfaces;
     private Pcap pcap;
-    private Thread captureThread = null;
 
     @Override
     public ArrayList<NetworkInterface> getNetworkInterfaces() {
@@ -35,8 +37,31 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
-    public void openPcapFile(String filename) {
+    public void openPcapFile(String filepath) {
+        File file = new File(filepath);
+        String filename = file.getName();
 
+        // TODO: Replace with exceptions thrown to GUI
+        if (!file.exists()) {
+            System.out.println("File doesn't exist!");
+        }
+        else if (!filename.substring(filename.lastIndexOf(".")).equals("pcap")) {
+            System.out.println("File is not a pcap file!");
+        }
+        else {
+            StringBuilder errbuf = new StringBuilder();
+            pcap = Pcap.openOffline(filename, errbuf);
+            if (pcap == null) {
+                System.out.println("ERR: " + errbuf);
+            }
+        }
+
+        PcapPacket packet = new PcapPacket(JMemory.POINTER);
+        while (pcap.nextEx(packet) == Pcap.NEXT_EX_OK) {
+            // TODO: Refactor?
+            System.out.println("Size: " + packet.getTotalSize());
+            System.out.println("----");
+        }
     }
 
     @Override

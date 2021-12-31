@@ -10,6 +10,9 @@ public abstract class PacketCapturer {
 
     public abstract void openInterface(int interfaceNum);
 
+    public abstract void startCapture();
+    public abstract void stopCapture();
+
     public abstract void getNextPacket();
 
     public abstract void parseRawPacket();

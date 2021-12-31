@@ -2,16 +2,12 @@ package capture;
 
 import org.jnetpcap.*;
 
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class JNetPcapHandler extends PacketCapturer {
-    ArrayList<PcapIf> interfaces;
-    Pcap pcap;
-
+    private ArrayList<PcapIf> interfaces;
+    private Pcap pcap;
+    private Thread captureThread = null;
 
     @Override
     public ArrayList<NetworkInterface> getNetworkInterfaces() {
@@ -58,34 +54,37 @@ public class JNetPcapHandler extends PacketCapturer {
         final int seconds = 5;
         int timeout = seconds * 1000;
 
+        /*
+         * interfaceName - Name of the interface according to the system
+         * snaplen - amount of data to capture per packet
+         * promiscuous - Sniff all packets passing through the system
+         * timeout - Amount of time to wait for reading packets before dispatching them
+         * errbuf - Error message in case of errors
+         */
         pcap = Pcap.openLive(interfaceName, snaplen, promiscuous, timeout, errbuf);
-
-        getNextPacket();
+        startCapture();
     }
 
-    // TODO: Replace deprecated method handler
+    @Override
+    public void startCapture() {
+        if (captureThread == null) {
+            captureThread = new Thread(new capturePacketTask(pcap));
+            captureThread.start();
+        }
+        else {
+            System.out.println("Already capturing packets!");
+        }
+    }
+
+    @Override
+    public void stopCapture() {
+        captureThread.interrupt();
+        captureThread = null;
+    }
+
     @Override
     public void getNextPacket() {
-        PcapHandler handler = new PcapHandler() {
-            @Override
-            public void nextPacket(Object o, long seconds, int usec, int caplen, int len, ByteBuffer byteBuffer) {
-                PrintStream out = (PrintStream) o;
 
-                String data = StandardCharsets.UTF_8.decode(byteBuffer).toString();
-                int end = Math.min(data.length(), 25);
-
-                out.println("Packet captured on: " + new Date(seconds * 1000));
-                out.println("Captured Size: " + caplen);
-                out.println("Size on wire: " + len);
-                out.println(data.substring(0, end));
-            }
-        };
-
-        int cnt = 10;
-        PrintStream out = System.out;
-        pcap.loop(cnt, handler, out);
-
-        pcap.close();
     }
 
     @Override

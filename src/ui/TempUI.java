@@ -25,6 +25,7 @@ public class TempUI extends JFrame {
         selectInterfacePanel.add(selectInterfaceTextField);
 
         JButton startCaptureButton = new JButton("Start Capture");
+        JButton stopCaptureButton = new JButton("Stop Capture");
 
         /*
          * Adding ActionListeners lambdas to each Button before adding them to the frame
@@ -53,11 +54,17 @@ public class TempUI extends JFrame {
             CaptureController.startCapture(interfaceID);
         });
 
+        stopCaptureButton.addActionListener(e -> {
+            System.out.println(e);
+            CaptureController.stopCapture();
+        });
+
         this.add(startWinPcapButton);
         this.add(stopWinPcapButton);
         this.add(getInterfacesButton);
         this.add(selectInterfacePanel);
         this.add(startCaptureButton);
+        this.add(stopCaptureButton);
 
         this.pack();
         this.setVisible(true);

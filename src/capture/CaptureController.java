@@ -19,4 +19,8 @@ public class CaptureController {
     public static void startCapture(int interfaceID) {
         capturer.openInterface(interfaceID);
     }
+
+    public static void stopCapture() {
+        capturer.stopCapture();
+    }
 }

@@ -10,14 +10,11 @@ public abstract class PacketCapturer {
     public abstract ArrayList<NetworkInterface> getNetworkInterfaces();
 
     public abstract void openPcapFile(String filepath);
-    public abstract void closePcapFile(String filename);
 
     public abstract void openInterface(int interfaceNum);
 
     public abstract void startCapture();
     public abstract void stopCapture();
-
-    public abstract void getNextPacket();
 
     public abstract void parseRawPacket(Object p);
 }

@@ -1,12 +1,10 @@
 package capture;
 
-import org.jnetpcap.*;
-import org.jnetpcap.nio.JMemory;
+import org.jnetpcap.Pcap;
+import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.format.FormatUtils;
-import org.jnetpcap.protocol.lan.Ethernet;
 import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.network.Ip6;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
 import java.io.File;
@@ -63,18 +61,8 @@ public class JNetPcapHandler extends PacketCapturer {
             }
             else {
                 startCapture();
-//                StringBuilder err = new StringBuilder();
-//                PcapPacket pcapPacket = new PcapPacket(JMemory.POINTER);
-//                pcap.nextEx(pcapPacket);
-//
-//                parseRawPacket(pcapPacket);
             }
         }
-    }
-
-    @Override
-    public void closePcapFile(String filename) {
-
     }
 
     @Override
@@ -119,28 +107,30 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
-    public void getNextPacket() {
-
-    }
-
-    @Override
     public void parseRawPacket(Object p) {
         if (p instanceof PcapPacket pcapPacket) {
             System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
             System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
 
-            Ethernet eth = new Ethernet();
             Ip4 ip = new Ip4();
+            String sourceIP;
+            String destinationIP;
 
-            if (pcapPacket.hasHeader(eth)) {
-                System.out.printf("Ethernet.type=%X\n", eth.type());
-            }
-            else {
-                System.out.println("E NULL");
-            }
+            Tcp tcp = new Tcp();
 
             if (pcapPacket.hasHeader(ip)) {
                 System.out.printf("ip.version=%d\n", ip.version());
+
+                sourceIP = FormatUtils.ip(ip.destination());
+                destinationIP = FormatUtils.ip(ip.destination());
+
+                System.out.println("Source IP:\t" + sourceIP);
+                System.out.println("Destination IP:\t" + destinationIP);
+
+                if (pcapPacket.hasHeader(tcp)) {
+                    System.out.println("Source port:\t" + tcp.source());
+                    System.out.println("Destination port:\t" + tcp.destination());
+                }
             }
             else {
                 System.out.println("I NULL");

@@ -1,7 +1,13 @@
 package capture;
 
 import org.jnetpcap.*;
+import org.jnetpcap.nio.JMemory;
 import org.jnetpcap.packet.PcapPacket;
+import org.jnetpcap.packet.format.FormatUtils;
+import org.jnetpcap.protocol.lan.Ethernet;
+import org.jnetpcap.protocol.network.Ip4;
+import org.jnetpcap.protocol.network.Ip6;
+import org.jnetpcap.protocol.tcpip.Tcp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,6 +63,11 @@ public class JNetPcapHandler extends PacketCapturer {
             }
             else {
                 startCapture();
+//                StringBuilder err = new StringBuilder();
+//                PcapPacket pcapPacket = new PcapPacket(JMemory.POINTER);
+//                pcap.nextEx(pcapPacket);
+//
+//                parseRawPacket(pcapPacket);
             }
         }
     }
@@ -118,7 +129,24 @@ public class JNetPcapHandler extends PacketCapturer {
             System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
             System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
 
+            Ethernet eth = new Ethernet();
+            Ip4 ip = new Ip4();
 
+            if (pcapPacket.hasHeader(eth)) {
+                System.out.printf("Ethernet.type=%X\n", eth.type());
+            }
+            else {
+                System.out.println("E NULL");
+            }
+
+            if (pcapPacket.hasHeader(ip)) {
+                System.out.printf("ip.version=%d\n", ip.version());
+            }
+            else {
+                System.out.println("I NULL");
+            }
+
+            System.out.println("-----");
         }
         else {
             System.out.println("Invalid object sent!");

@@ -45,22 +45,25 @@ public class JNetPcapHandler extends PacketCapturer {
         if (!file.exists()) {
             System.out.println("File doesn't exist!");
         }
-        else if (!filename.substring(filename.lastIndexOf(".")).equals("pcap")) {
+        else if (!filename.substring(filename.lastIndexOf(".") + 1).equals("pcap")) {
             System.out.println("File is not a pcap file!");
         }
         else {
             StringBuilder errbuf = new StringBuilder();
-            pcap = Pcap.openOffline(filename, errbuf);
+            System.out.println("FILEPATH: " + file.getPath());
+            pcap = Pcap.openOffline(file.getPath(), errbuf);
             if (pcap == null) {
                 System.out.println("ERR: " + errbuf);
             }
         }
 
-        PcapPacket packet = new PcapPacket(JMemory.POINTER);
-        while (pcap.nextEx(packet) == Pcap.NEXT_EX_OK) {
-            // TODO: Refactor?
-            System.out.println("Size: " + packet.getTotalSize());
-            System.out.println("----");
+        if (pcap != null) {
+            PcapPacket packet = new PcapPacket(JMemory.POINTER);
+            while (pcap.nextEx(packet) == Pcap.NEXT_EX_OK) {
+                // TODO: Refactor?
+                System.out.println("Size: " + packet.getTotalSize());
+                System.out.println("----");
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import capture.CaptureController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class TempUI extends JFrame {
 
@@ -26,6 +27,8 @@ public class TempUI extends JFrame {
 
         JButton startCaptureButton = new JButton("Start Capture");
         JButton stopCaptureButton = new JButton("Stop Capture");
+
+        JButton openPcapFileButton = new JButton("Open Pcap File");
 
         /*
          * Adding ActionListeners lambdas to each Button before adding them to the frame
@@ -59,12 +62,18 @@ public class TempUI extends JFrame {
             CaptureController.stopCapture();
         });
 
+        openPcapFileButton.addActionListener(e -> {
+            System.out.println(e);
+            CaptureController.openPcapFile(new File("captures/http_packts.pcap"));
+        });
+
         this.add(startWinPcapButton);
         this.add(stopWinPcapButton);
         this.add(getInterfacesButton);
         this.add(selectInterfacePanel);
         this.add(startCaptureButton);
         this.add(stopCaptureButton);
+        this.add(openPcapFileButton);
 
         this.pack();
         this.setVisible(true);

@@ -1,5 +1,6 @@
 package capture;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class CaptureController {
@@ -22,5 +23,9 @@ public class CaptureController {
 
     public static void stopCapture() {
         capturer.stopCapture();
+    }
+
+    public static void openPcapFile(File file) {
+        capturer.openPcapFile(file.getPath());
     }
 }

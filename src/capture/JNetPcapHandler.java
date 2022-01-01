@@ -1,11 +1,11 @@
 package capture;
 
 import org.jnetpcap.*;
-import org.jnetpcap.nio.JMemory;
 import org.jnetpcap.packet.PcapPacket;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class JNetPcapHandler extends PacketCapturer {
     private ArrayList<PcapIf> interfaces;
@@ -55,14 +55,8 @@ public class JNetPcapHandler extends PacketCapturer {
             if (pcap == null) {
                 System.out.println("ERR: " + errbuf);
             }
-        }
-
-        if (pcap != null) {
-            PcapPacket packet = new PcapPacket(JMemory.POINTER);
-            while (pcap.nextEx(packet) == Pcap.NEXT_EX_OK) {
-                // TODO: Refactor?
-                System.out.println("Size: " + packet.getTotalSize());
-                System.out.println("----");
+            else {
+                startCapture();
             }
         }
     }
@@ -90,13 +84,16 @@ public class JNetPcapHandler extends PacketCapturer {
          * errbuf - Error message in case of errors
          */
         pcap = Pcap.openLive(interfaceName, snaplen, promiscuous, timeout, errbuf);
+        if (pcap == null ) {
+            System.out.println("ERR: " + errbuf);
+        }
         startCapture();
     }
 
     @Override
     public void startCapture() {
-        if (captureThread == null) {
-            captureThread = new Thread(new capturePacketTask(pcap));
+        if (captureThread == null || !captureThread.isAlive()) {
+            captureThread = new Thread(new capturePacketTask(this, pcap));
             captureThread.start();
         }
         else {
@@ -116,7 +113,15 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
-    public void parseRawPacket() {
+    public void parseRawPacket(Object p) {
+        if (p instanceof PcapPacket pcapPacket) {
+            System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
+            System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
 
+
+        }
+        else {
+            System.out.println("Invalid object sent!");
+        }
     }
 }

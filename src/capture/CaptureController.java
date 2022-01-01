@@ -1,10 +1,13 @@
 package capture;
 
+import packets.Packet;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class CaptureController {
     private static final PacketCapturer capturer = new JNetPcapHandler();
+    private static PacketHolder packetHolder = new PacketHolder();
 
     public static ArrayList<NetworkInterface> getInterfaces() {
         ArrayList<NetworkInterface> interfaces = capturer.getNetworkInterfaces();
@@ -17,7 +20,7 @@ public class CaptureController {
         return interfaces;
     }
 
-    public static void startCapture(int interfaceID) {
+    public static void openInterfaceForCapture(int interfaceID) {
         capturer.openInterface(interfaceID);
     }
 
@@ -27,5 +30,9 @@ public class CaptureController {
 
     public static void openPcapFile(File file) {
         capturer.openPcapFile(file.getPath());
+    }
+
+    public static void addNewPacket(Packet p) {
+        packetHolder.addPacket(p);
     }
 }

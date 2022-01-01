@@ -54,7 +54,7 @@ public class TempUI extends JFrame {
             System.out.println(e.toString());
 
             int interfaceID = Integer.parseInt(selectInterfaceTextField.getText());
-            CaptureController.startCapture(interfaceID);
+            CaptureController.openInterfaceForCapture(interfaceID);
         });
 
         stopCaptureButton.addActionListener(e -> {

@@ -3,13 +3,15 @@ package capture;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
-import org.jnetpcap.packet.format.FormatUtils;
 import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.tcpip.Tcp;
+import org.jnetpcap.protocol.tcpip.*;
+
+import packets.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 public class JNetPcapHandler extends PacketCapturer {
     private ArrayList<PcapIf> interfaces;
@@ -113,33 +115,71 @@ public class JNetPcapHandler extends PacketCapturer {
             System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
 
             Ip4 ip = new Ip4();
-            String sourceIP;
-            String destinationIP;
 
             Tcp tcp = new Tcp();
+            Udp udp = new Udp();
 
+            Http http = new Http();
+
+            Packet packet = null;
             if (pcapPacket.hasHeader(ip)) {
-                System.out.printf("ip.version=%d\n", ip.version());
-
-                sourceIP = FormatUtils.ip(ip.destination());
-                destinationIP = FormatUtils.ip(ip.destination());
-
-                System.out.println("Source IP:\t" + sourceIP);
-                System.out.println("Destination IP:\t" + destinationIP);
-
                 if (pcapPacket.hasHeader(tcp)) {
-                    System.out.println("Source port:\t" + tcp.source());
-                    System.out.println("Destination port:\t" + tcp.destination());
+                    if (pcapPacket.hasHeader(http)) {
+                        if (tcp.source() == 80 || tcp.destination() == 80) {
+                            packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.HTTP);
+                        }
+                    }
+                }
+                else if (pcapPacket.hasHeader(udp)) {
+                    packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.UDP);
                 }
             }
-            else {
-                System.out.println("I NULL");
+
+            if (packet == null) {
+                packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.Unknown);
             }
 
-            System.out.println("-----");
+            CaptureController.addNewPacket(packet);
+
         }
         else {
             System.out.println("Invalid object sent!");
+        }
+    }
+
+    private static class PacketFactory {
+        private PacketFactory() {}
+
+        static Packet createPacket(PcapPacket p, Packet.Protocol protocol) {
+            switch (protocol) {
+                case HTTP -> {
+                    Map<String, String> ipHeaders = getIpHeaders(p);
+                    Map<String, String> tcpHeader = getTcpHeaders(p);
+
+                    Date recvTime = new Date(p.getCaptureHeader().timestampInMillis());
+                    int size = p.getTotalSize();
+                    int headerSize = p.getCaptureHeader().hdr_len();
+
+                    return new HTTPPacket(ipHeaders, tcpHeader, null, null, recvTime, size, headerSize);
+                }
+                case TCP -> {
+                    return new TCPPacket();
+                }
+                case UDP -> {
+                    return new UDPPacket();
+                }
+                default -> {
+                    return new DefaultPacket();
+                }
+            }
+        }
+
+        private static Map<String, String> getIpHeaders(PcapPacket p) {
+            return null;
+        }
+
+        private static Map<String, String> getTcpHeaders(PcapPacket p) {
+            return null;
         }
     }
 }

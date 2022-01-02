@@ -1,6 +1,7 @@
 package packets;
 
 import java.util.Date;
+import java.util.Map;
 
 public abstract class Packet {
     public enum Protocol {
@@ -12,15 +13,45 @@ public abstract class Packet {
     }
 
     protected Protocol protocol = Protocol.Unknown;
+    protected int protocolLayer;
     protected Date recvTime;
 
-    public abstract Protocol getProtocol();
+    protected Map<String, String> networkHeaders;
+    protected Map<String, String> transportHeaders;
+    protected Map<String, String> applicationHeaders;
+    protected String data;
 
-    public abstract String getPacketHeaders();
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    public Map<String, String> getNetworkHeaders() {
+        if (protocolLayer >= 3) {
+            return networkHeaders;
+        }
+        else {
+            return null;
+        }
+    }
+    public Map<String, String> getTransportHeaders() {
+        if (protocolLayer >= 4) {
+            return transportHeaders;
+        }
+        else {
+            return null;
+        }
+    }
+    public Map<String, String> getApplicationHeaders() {
+        if (protocolLayer == 5) {
+            return applicationHeaders;
+        }
+        else {
+            return null;
+        }
+    }
 
     public abstract String getData();
 
     public abstract int size();
-
     public abstract int headerSize();
 }

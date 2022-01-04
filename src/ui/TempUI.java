@@ -64,7 +64,7 @@ public class TempUI extends JFrame {
 
         openPcapFileButton.addActionListener(e -> {
             System.out.println(e);
-            CaptureController.openPcapFile(new File("captures/http_packts.pcap"));
+            CaptureController.openPcapFile(new File("captures/less_http.pcap"));
         });
 
         this.add(startWinPcapButton);

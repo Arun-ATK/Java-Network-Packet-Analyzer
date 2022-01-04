@@ -2,7 +2,9 @@ package capture;
 
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapIf;
+import org.jnetpcap.nio.JBuffer;
 import org.jnetpcap.packet.PcapPacket;
+import org.jnetpcap.packet.format.FormatUtils;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.*;
 
@@ -11,6 +13,7 @@ import packets.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class JNetPcapHandler extends PacketCapturer {
@@ -127,6 +130,9 @@ public class JNetPcapHandler extends PacketCapturer {
                     if (pcapPacket.hasHeader(http)) {
                         if (tcp.source() == 80 || tcp.destination() == 80) {
                             packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.HTTP);
+
+                            System.out.println("Version: " + packet.getNetworkHeaders().get("Version"));
+                            System.out.println("Flags: " + packet.getNetworkHeaders().get("Flags"));
                         }
                     }
                 }
@@ -160,7 +166,33 @@ public class JNetPcapHandler extends PacketCapturer {
                     int size = p.getTotalSize();
                     int headerSize = p.getCaptureHeader().hdr_len();
 
-                    return new HTTPPacket(ipHeaders, tcpHeader, null, null, recvTime, size, headerSize);
+                    Http http = new Http();
+                    p.getHeader(http);
+                    if (http.isResponse()) {
+                        System.out.println("Response message");
+                    }
+
+                    String[] headerLines = http.header().split("\n");
+
+//                    for (int i = 0; i < headerLines.length; ++i) {
+//                        System.out.println(headerLines[i]);
+//                    }
+
+                    Map<String, String> httpHeaders = new HashMap<>();
+                    for (String headerLine : headerLines) {
+                        String[] line = headerLine.split(":");
+
+                        try {
+                            httpHeaders.put(line[0].trim(), line[1].trim());
+                        } catch (ArrayIndexOutOfBoundsException ex) {}
+                    }
+
+                    JBuffer buffer = new JBuffer(p.getTotalSize());
+                    p.transferStateAndDataTo(buffer);
+                    String data = buffer.toHexdump();
+
+                    return new HTTPPacket(ipHeaders, tcpHeader, httpHeaders,
+                            data, recvTime, size, headerSize);
                 }
                 case TCP -> {
                     return new TCPPacket();
@@ -175,11 +207,52 @@ public class JNetPcapHandler extends PacketCapturer {
         }
 
         private static Map<String, String> getIpHeaders(PcapPacket p) {
-            return null;
+            Map<String, String> headers = new HashMap<>();
+            Ip4 ip = new Ip4();
+            p.getHeader(ip);
+
+            headers.put("Version", String.valueOf(ip.version()));
+            headers.put("Header Length", String.valueOf(ip.hlen()));
+            headers.put("Service Type", String.valueOf(ip.type()));
+            headers.put("Total Length", String.valueOf(ip.length()));
+            headers.put("Identification", String.valueOf(ip.id()));
+
+            int f = ip.flags();
+            String flags = "";
+            for (int i = 2; i >= 0; --i) {
+                flags = flags.concat(String.valueOf((f >>> i) & 1));
+            }
+
+            headers.put("Flags", flags);
+            headers.put("Fragmentation Offset", String.valueOf(ip.offset()));
+            headers.put("Source IP", FormatUtils.ip(ip.source()));
+            headers.put("Destination IP", FormatUtils.ip(ip.destination()));
+
+            return headers;
         }
 
         private static Map<String, String> getTcpHeaders(PcapPacket p) {
-            return null;
+            Map<String, String> headers = new HashMap<>();
+            Tcp tcp = new Tcp();
+            p.getHeader(tcp);
+
+            headers.put("Source Port", String.valueOf(tcp.source()));
+            headers.put("Destination Port", String.valueOf(tcp.destination()));
+            headers.put("Sequence Number", String.valueOf(tcp.seq()));
+            headers.put("Acknowledgement Number", String.valueOf(tcp.ack()));
+            headers.put("Header Length", String.valueOf(tcp.hlen()));
+
+            int f = tcp.flags();
+            String flags = "";
+            for (int i = 5; i >= 0; --i) {
+                flags = flags.concat(String.valueOf((f >>> i) & 1));
+            }
+            headers.put("Flags", flags);
+            headers.put("Advertised Window", String.valueOf(tcp.window()));
+            headers.put("Checksum", String.valueOf(tcp.checksum()));
+            headers.put("Urgent Pointer", String.valueOf(tcp.urgent()));
+
+            return headers;
         }
     }
 }

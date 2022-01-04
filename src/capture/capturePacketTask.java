@@ -23,6 +23,7 @@ public class capturePacketTask implements Runnable {
             switch (stat) {
                 case Pcap.NEXT_EX_OK -> {
                     PcapPacket p = new PcapPacket(packet);
+                    packetCapturer.addRawPacket(p);
                     packetCapturer.parseRawPacket(p);
                 }
                 case Pcap.NEXT_EX_EOF -> {
@@ -33,10 +34,7 @@ public class capturePacketTask implements Runnable {
                     System.out.println("Some error occurred");
                     cont = false;
                 }
-                default -> {
-                    System.out.println("WHAT: " + stat);
-                    cont = false;
-                }
+                default -> System.out.println("WHAT: " + stat);
             }
 
             if (Thread.currentThread().isInterrupted()) {

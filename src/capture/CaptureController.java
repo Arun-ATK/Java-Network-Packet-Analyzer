@@ -35,4 +35,8 @@ public class CaptureController {
     public static void addNewPacket(Packet p) {
         packetHolder.addPacket(p);
     }
+
+    public static void saveAsPcapFile(String s) {
+        capturer.saveFile(s);
+    }
 }

@@ -8,7 +8,7 @@ public abstract class Packet {
         HTTP,
         TCP,
         UDP,
-
+        IP,
         Unknown
     }
 

@@ -30,6 +30,8 @@ public class TempUI extends JFrame {
 
         JButton openPcapFileButton = new JButton("Open Pcap File");
 
+        JButton savePcapFileButton = new JButton("Save as Pcap File");
+
         /*
          * Adding ActionListeners lambdas to each Button before adding them to the frame
          * Each ActionListener will process the input data (if any) before calling
@@ -67,6 +69,11 @@ public class TempUI extends JFrame {
             CaptureController.openPcapFile(new File("captures/less_http.pcap"));
         });
 
+        savePcapFileButton.addActionListener(e -> {
+            System.out.println(e);
+            CaptureController.saveAsPcapFile("captures/newFile.pcap");
+        });
+
         this.add(startWinPcapButton);
         this.add(stopWinPcapButton);
         this.add(getInterfacesButton);
@@ -74,6 +81,7 @@ public class TempUI extends JFrame {
         this.add(startCaptureButton);
         this.add(stopCaptureButton);
         this.add(openPcapFileButton);
+        this.add(savePcapFileButton);
 
         this.pack();
         this.setVisible(true);

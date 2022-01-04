@@ -1,13 +1,15 @@
 package capture;
 
 import org.jnetpcap.Pcap;
+import org.jnetpcap.PcapDumper;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.nio.JBuffer;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.format.FormatUtils;
 import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.tcpip.*;
-
+import org.jnetpcap.protocol.tcpip.Http;
+import org.jnetpcap.protocol.tcpip.Tcp;
+import org.jnetpcap.protocol.tcpip.Udp;
 import packets.*;
 
 import java.io.File;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 public class JNetPcapHandler extends PacketCapturer {
     private ArrayList<PcapIf> interfaces;
+    private final ArrayList<PcapPacket> rawPackets = new ArrayList<>();
     private Pcap pcap;
 
     @Override
@@ -112,6 +115,13 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
+    public void addRawPacket(Object p) {
+        if (p instanceof PcapPacket pcapPacket) {
+            rawPackets.add(pcapPacket);
+        }
+    }
+
+    @Override
     public void parseRawPacket(Object p) {
         if (p instanceof PcapPacket pcapPacket) {
             System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
@@ -135,9 +145,19 @@ public class JNetPcapHandler extends PacketCapturer {
                             System.out.println("Flags: " + packet.getNetworkHeaders().get("Flags"));
                         }
                     }
+
+                    // Unsupported TCP Packet
+                    else {
+                        packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.TCP);
+                    }
                 }
                 else if (pcapPacket.hasHeader(udp)) {
                     packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.UDP);
+                }
+
+                // Unsupported IP Packet
+                else {
+                    packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.IP);
                 }
             }
 
@@ -151,6 +171,17 @@ public class JNetPcapHandler extends PacketCapturer {
         else {
             System.out.println("Invalid object sent!");
         }
+    }
+
+    @Override
+    public void saveFile(String fileName) {
+        PcapDumper pcapDumper = pcap.dumpOpen(fileName);
+        for (PcapPacket p : rawPackets) {
+            pcapDumper.dump(p);
+        }
+
+        // Saves the file on the disk using provided filepath
+        pcapDumper.flush();
     }
 
     private static class PacketFactory {
@@ -174,17 +205,17 @@ public class JNetPcapHandler extends PacketCapturer {
 
                     String[] headerLines = http.header().split("\n");
 
-//                    for (int i = 0; i < headerLines.length; ++i) {
-//                        System.out.println(headerLines[i]);
-//                    }
-
                     Map<String, String> httpHeaders = new HashMap<>();
                     for (String headerLine : headerLines) {
                         String[] line = headerLine.split(":");
 
                         try {
                             httpHeaders.put(line[0].trim(), line[1].trim());
-                        } catch (ArrayIndexOutOfBoundsException ex) {}
+                        } catch (ArrayIndexOutOfBoundsException ignored) {}
+                    }
+
+                    for (Map.Entry<String, String> set : httpHeaders.entrySet()) {
+                        System.out.println(set.getKey() + ": " + set.getValue());
                     }
 
                     JBuffer buffer = new JBuffer(p.getTotalSize());

@@ -1,7 +1,5 @@
 package capture;
 
-import packets.Packet;
-
 import java.util.ArrayList;
 
 public abstract class PacketCapturer {
@@ -16,5 +14,8 @@ public abstract class PacketCapturer {
     public abstract void startCapture();
     public abstract void stopCapture();
 
+    public abstract void addRawPacket(Object p);
     public abstract void parseRawPacket(Object p);
+
+    public abstract void saveFile(String fileName);
 }

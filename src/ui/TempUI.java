@@ -39,12 +39,12 @@ public class TempUI extends JFrame {
          */
         startWinPcapButton.addActionListener(e -> {
             System.out.println(e.toString());
-            SystemController.startWin();
+            SystemController.startCaptureLibrary();
         });
 
         stopWinPcapButton.addActionListener(e -> {
             System.out.println(e.toString());
-            SystemController.stopWin();
+            SystemController.stopCaptureLibrary();
         });
 
         getInterfacesButton.addActionListener(e -> {

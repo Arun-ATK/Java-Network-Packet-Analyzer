@@ -1,21 +1,23 @@
 package sysutil;
 
-import capture.JNetPcapHandler;
-import capture.PacketCapturer;
+import ui.StartScreen;
 import ui.TempUI;
 
 import java.io.IOException;
 
 public class SystemController {
+    private static OsCheck.OSType osType;
 
     public static void main(String[] args) {
         System.out.println("Java Packet Analyser project");
 
-        OsCheck.OSType osType = OsCheck.getOperatingSystemType();
+        osType = OsCheck.getOperatingSystemType();
         System.out.println("OS: " + osType);
 
-        ui.TempUI tui = new TempUI();
-        tui.startUI();
+//        ui.TempUI tui = new TempUI();
+//        tui.startUI();
+
+        new StartScreen();
     }
 
     private static void startWinPcap() throws IOException {
@@ -30,18 +32,32 @@ public class SystemController {
         System.out.println("Issued WinPcap stop cmd");
     }
 
-    // Temporary wrappers to starting and stopping winpcap
-    public static void startWin() {
+    // Temporary wrappers to starting and stopping WinPcap
+    public static void startCaptureLibrary() {
         try {
-            startWinPcap();
+            if (osType == OsCheck.OSType.Windows) {
+                System.out.println("Starting WinPcap...");
+                startWinPcap();
+            } else {
+                System.out.println(osType.toString());
+                System.out.println("Unsupported OS");
+                System.exit(-1);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public static void stopWin() {
+    public static void stopCaptureLibrary() {
         try {
-            stopWinPcap();
+            if (osType == OsCheck.OSType.Windows) {
+                System.out.println("Stopping WinPcap...");
+                stopWinPcap();
+            }
+            else {
+                System.out.println("Unknown OS type while closing (not possible)!");
+                System.exit(-1);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

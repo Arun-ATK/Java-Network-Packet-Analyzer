@@ -13,4 +13,9 @@ public record NetworkInterface(int id, String name, String description) {
     public String getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return getDescription();
+    }
 }

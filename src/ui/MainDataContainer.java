@@ -1,6 +1,7 @@
 package ui;
 
 import sysutil.SystemController;
+import capture.CaptureController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,8 @@ public class MainDataContainer extends JFrame {
 
     public MainDataContainer() {
         sysutil.SystemController.startCaptureLibrary();
+        CaptureController.startCapture();
+
 
         // Closing the frame should first make a call to stop the underlying packet capture library
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

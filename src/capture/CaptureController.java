@@ -24,6 +24,9 @@ public class CaptureController {
         capturer.openInterface(interfaceID);
     }
 
+    public static void startCapture() {
+        capturer.startCapture();
+    }
     public static void stopCapture() {
         capturer.stopCapture();
     }

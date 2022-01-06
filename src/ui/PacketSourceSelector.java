@@ -5,9 +5,8 @@ import capture.NetworkInterface;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
-
-import static capture.CaptureController.getInterfaces;
 
 public class PacketSourceSelector extends JFrame {
     public enum Mode {
@@ -15,9 +14,11 @@ public class PacketSourceSelector extends JFrame {
         OFFLINE,
     }
 
-    private String chosenFileOrInterface;
+    String selectedFile;
+    int selectedInterfaceID;
 
     public PacketSourceSelector(Mode mode) {
+
         this.setTitle("Select Source");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new GridLayout(0, 1));
@@ -46,39 +47,70 @@ public class PacketSourceSelector extends JFrame {
         /* **********************************
          *      SOURCE SELECTOR PANEL
          * **********************************/
-        JPanel selectSourcePanel = new JPanel();
-        selectSourcePanel.setLayout(new GridLayout(0, 1));
-
         JButton selectSourceButton = new JButton();
+
+        /* -----------------------------
+         * LOGIC FOR SELECTING PCAP FILE
+         * ----------------------------- */
         if (mode == Mode.OFFLINE) {
             selectSourceButton.setText("Select File");
             // TODO JFileChooser thing
             JFileChooser fileChooser = new JFileChooser("captures");
             setUpFileChooser(fileChooser);
 
-            fileChooser.addActionListener(e -> {
-                chosenFileOrInterface = fileChooser.getName();
-            });
+            fileChooser.addActionListener(e -> selectedFile = fileChooser.getName());
 
         }
+
+        /* -----------------------------
+         * LOGIC FOR SELECTING INTERFACE
+         * ----------------------------- */
         else if (mode == Mode.LIVE) {
             selectSourceButton.setText("Select Interface");
             // TODO DropDown Menu displaying all the available interfaces
-            JComboBox<String> interfaceComboBox = new JComboBox<>();
+            JComboBox<NetworkInterface> interfaceComboBox = new JComboBox<>();
 
             ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
             for (NetworkInterface anInterface : interfaces) {
-                interfaceComboBox.addItem(anInterface.getDescription());
+                interfaceComboBox.addItem(anInterface);
             }
+
+
+            selectedLabel.setText(interfaceComboBox.getItemAt(0).getDescription());
+            interfaceComboBox.addItemListener(e -> {
+                NetworkInterface selectedNetworkInterface = (NetworkInterface) interfaceComboBox.getSelectedItem();
+                assert selectedNetworkInterface != null;
+                selectedLabel.setText(selectedNetworkInterface.getDescription());
+
+                selectedInterfaceID = selectedNetworkInterface.getId();
+            });
 
             this.add(interfaceComboBox);
         }
 
-//        selectSourcePanel.add(selectSourceButton);
-        this.add(selectSourcePanel);
+        /* ********************************
+         * ACTIONLISTENER FOR SELECT BUTTON
+         * ********************************/
+        selectSourceButton.addActionListener(e -> {
+            if (mode == Mode.LIVE) {
+                CaptureController.openInterfaceForCapture(selectedInterfaceID);
+            }
+            else if (mode == Mode.OFFLINE) {
+                CaptureController.openPcapFile(new File("captures/less_http.pcap"));
+            }
+
+            new MainDataContainer();
+            this.dispose();
+        });
+
+
+        // Blank Panel for spacing
+        this.add(new JPanel());
+
         this.add(selectSourceButton);
 
         this.pack();
+        this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }

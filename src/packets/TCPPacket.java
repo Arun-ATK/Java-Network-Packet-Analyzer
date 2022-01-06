@@ -19,12 +19,12 @@ public class TCPPacket extends Packet{
     }
 
     @Override
-    public int size() {
+    public int getSize() {
         return 0;
     }
 
     @Override
-    public int headerSize() {
+    public int getHeaderSize() {
         return 0;
     }
 }

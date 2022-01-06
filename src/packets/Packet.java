@@ -14,7 +14,7 @@ public abstract class Packet {
 
     protected Protocol protocol = Protocol.Unknown;
     protected int protocolLayer;
-    protected Date recvTime;
+    protected Date receiveDate;
 
     protected Map<String, String> networkHeaders;
     protected Map<String, String> transportHeaders;
@@ -50,8 +50,12 @@ public abstract class Packet {
         }
     }
 
+    public Date getReceiveDate() {
+        return new Date(receiveDate.getTime());
+    }
+
     public abstract String getData();
 
-    public abstract int size();
-    public abstract int headerSize();
+    public abstract int getSize();
+    public abstract int getHeaderSize();
 }

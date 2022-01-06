@@ -13,13 +13,19 @@ public class StartScreen extends JFrame {
         JButton liveCaptureButton = new JButton("Start Live Capture");
         JButton openPcapFileButton = new JButton("Open Pcap File");
 
+        /*
+         * After selecting an option, open the window for selecting the
+         * interface/file for getting the packets.
+         * Close the window after selecting an option
+         */
+
         liveCaptureButton.addActionListener(e -> {
-            new MainDataContainer(MainDataContainer.Mode.LIVE);
+            new PacketSourceSelector(PacketSourceSelector.Mode.LIVE);
             this.dispose();
         });
 
         openPcapFileButton.addActionListener(e -> {
-            new MainDataContainer(MainDataContainer.Mode.OFFLINE);
+            new PacketSourceSelector(PacketSourceSelector.Mode.OFFLINE);
             this.dispose();
         });
 

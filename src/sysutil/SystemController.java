@@ -39,7 +39,6 @@ public class SystemController {
                 System.out.println("Starting WinPcap...");
                 startWinPcap();
             } else {
-                System.out.println(osType.toString());
                 System.out.println("Unsupported OS");
                 System.exit(-1);
             }

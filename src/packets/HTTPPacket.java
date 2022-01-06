@@ -19,7 +19,7 @@ public class HTTPPacket extends Packet {
 
         protocol = Protocol.HTTP;
         protocolLayer = 5;
-        this.recvTime = recvTime;
+        this.receiveDate = recvTime;
     }
 
     @Override
@@ -28,12 +28,12 @@ public class HTTPPacket extends Packet {
     }
 
     @Override
-    public int size() {
+    public int getSize() {
         return 0;
     }
 
     @Override
-    public int headerSize() {
+    public int getHeaderSize() {
         return 0;
     }
 }

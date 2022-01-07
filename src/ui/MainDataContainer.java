@@ -77,8 +77,8 @@ public class MainDataContainer extends JFrame {
         frame.dispose();
     }
 
-    public void addPacket(Packet packet) {
-       dataTable.addRow(packet);
+    public void addPacket(int id, Packet packet) {
+       dataTable.addRow(id, packet);
        dataTable.revalidate();
        dataTable.repaint();
     }

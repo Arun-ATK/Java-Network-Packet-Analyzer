@@ -18,13 +18,13 @@ public class DataTable extends JTable {
 
     }
 
-    public void addRow(Packet packet) {
-        String id = String.valueOf(nextRowID++);
+    public void addRow(int id, Packet packet) {
+        String idString = String.valueOf(id);
         String protocol = packet.getProtocol().toString();
         String time = packet.getReceiveDate().toString();
         String size = String.valueOf(packet.getSize());
         String headerSize = String.valueOf(packet.getHeaderSize());
 
-        defaultTableModel.addRow(new Object[] {id, time, protocol, size, headerSize});
+        defaultTableModel.addRow(new Object[] {idString, time, protocol, size, headerSize});
     }
 }

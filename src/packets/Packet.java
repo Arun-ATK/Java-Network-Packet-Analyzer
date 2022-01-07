@@ -12,6 +12,8 @@ public abstract class Packet {
         Unknown
     }
 
+    protected int size;
+    protected int headerSize;
     protected Protocol protocol = Protocol.Unknown;
     protected int protocolLayer;
     protected Date receiveDate;

@@ -4,14 +4,13 @@ import packets.HTTPPacket;
 import packets.Packet;
 import ui.MainDataContainer;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
 
 public class CaptureController {
     private static final PacketCapturer capturer = new JNetPcapHandler();
 
-    private static PacketHolder packetHolder = new PacketHolder();
+    private static final ArrayList<Packet> packetHolder = new ArrayList<>();
 
     static MainDataContainer dataContainer;
 
@@ -46,8 +45,8 @@ public class CaptureController {
     public static void addNewPacket(Packet p) {
         // TEMP FILER
         if (!(p instanceof HTTPPacket)) return;
-        packetHolder.addPacket(p);
-        dataContainer.addPacket(p);
+        packetHolder.add(p);
+        dataContainer.addPacket(packetHolder.size() - 1, p);
     }
 
     public static void saveAsPcapFile(String s) {

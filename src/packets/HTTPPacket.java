@@ -20,6 +20,8 @@ public class HTTPPacket extends Packet {
         protocol = Protocol.HTTP;
         protocolLayer = 5;
         this.receiveDate = recvTime;
+        this.size = size;
+        this.headerSize = headerSize;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class HTTPPacket extends Packet {
 
     @Override
     public int getSize() {
-        return 0;
+        return size;
     }
 
     @Override

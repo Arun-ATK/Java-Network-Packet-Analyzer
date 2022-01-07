@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class PacketDataPanel extends JPanel {
     public PacketDataPanel(Packet packet) {
-        this.setLayout(new GridLayout(1, 0));
+//        this.setLayout(new GridLayout(1, 0));
 
         JLabel protocolLabel = new JLabel(packet.getProtocol().toString());
         JLabel timeLabel = new JLabel(packet.getReceiveDate().toString());
@@ -18,5 +18,8 @@ public class PacketDataPanel extends JPanel {
         this.add(timeLabel);
         this.add(sizeLabel);
         this.add(headerSizeLabel);
+
+//        this.setMinimumSize(new Dimension(200, 50));
+        this.setPreferredSize(new Dimension(200, 50));
     }
 }

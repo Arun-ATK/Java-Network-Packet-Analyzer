@@ -5,7 +5,7 @@ import java.util.Map;
 public class TCPPacket extends Packet{
     @Override
     public Protocol getProtocol() {
-        return null;
+        return Protocol.TCP;
     }
 
     @Override

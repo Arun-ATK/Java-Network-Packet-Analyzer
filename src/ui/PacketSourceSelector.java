@@ -56,7 +56,7 @@ public class PacketSourceSelector extends JFrame {
             selectSourceButton.setText("Select File");
             // TODO JFileChooser thing
             JFileChooser fileChooser = new JFileChooser("captures");
-            setUpFileChooser(fileChooser);
+//            setUpFileChooser(fileChooser);
 
             fileChooser.addActionListener(e -> selectedFile = fileChooser.getName());
 
@@ -96,7 +96,7 @@ public class PacketSourceSelector extends JFrame {
                 CaptureController.openInterfaceForCapture(selectedInterfaceID);
             }
             else if (mode == Mode.OFFLINE) {
-                CaptureController.openPcapFile(new File("captures/less_http.pcap"));
+                CaptureController.openPcapFile(new File("captures/newFile.pcap"));
             }
 
             new MainDataContainer();
@@ -118,7 +118,7 @@ public class PacketSourceSelector extends JFrame {
     private void setUpFileChooser(JFileChooser fileChooser) {
         JFrame fileFrame = new JFrame("Select File");
         fileFrame.add(fileChooser);
-        fileFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         fileFrame.pack();
         fileFrame.setLocationRelativeTo(PacketSourceSelector.this);

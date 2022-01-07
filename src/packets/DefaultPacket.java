@@ -4,11 +4,6 @@ import java.util.Map;
 
 public class DefaultPacket extends Packet {
     @Override
-    public Protocol getProtocol() {
-        return null;
-    }
-
-    @Override
     public Map<String, String> getNetworkHeaders() {
         return null;
     }

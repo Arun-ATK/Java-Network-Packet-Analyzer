@@ -5,7 +5,7 @@ import java.util.Map;
 public class UDPPacket extends Packet {
     @Override
     public Protocol getProtocol() {
-        return null;
+        return Protocol.UDP;
     }
 
     @Override

@@ -4,18 +4,31 @@ import packets.Packet;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DataTable extends JTable {
-    int nextRowID = 1;
     DefaultTableModel defaultTableModel;
 
     public DataTable() {
         defaultTableModel = new DefaultTableModel(0, 0);
 
-        String[] tableHeaders = new String[] {"ID", "TIME", "PROTOCOL", "SIZE", "HEADER SIZE"};
+        String[] tableHeaders = new String[] {"ID", "TIME", "PROTOCOL", "SIZE"};
         defaultTableModel.setColumnIdentifiers(tableHeaders);
         this.setModel(defaultTableModel);
 
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                DataTable table = (DataTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    int id =  Integer.parseInt((String) table.getValueAt(row, 0));
+                }
+            }
+        });
     }
 
     public void addRow(int id, Packet packet) {
@@ -23,8 +36,7 @@ public class DataTable extends JTable {
         String protocol = packet.getProtocol().toString();
         String time = packet.getReceiveDate().toString();
         String size = String.valueOf(packet.getSize());
-        String headerSize = String.valueOf(packet.getHeaderSize());
 
-        defaultTableModel.addRow(new Object[] {idString, time, protocol, size, headerSize});
+        defaultTableModel.addRow(new Object[] {idString, time, protocol, size});
     }
 }

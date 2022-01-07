@@ -10,7 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class MainDataContainer extends JFrame {
-    JPanel dataPanel;
+    DataTable dataTable;
 
     public MainDataContainer() {
         sysutil.SystemController.startCaptureLibrary();
@@ -57,9 +57,8 @@ public class MainDataContainer extends JFrame {
          * All Captured packets will be displayed here
          * TODO: Double click to view additional details
          * **********************************************/
-        dataPanel = new JPanel();
-        dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.Y_AXIS));
-        JScrollPane dataScrollPane = new JScrollPane(dataPanel,
+        dataTable = new DataTable();
+        JScrollPane dataScrollPane = new JScrollPane(dataTable,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         dataScrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -79,12 +78,8 @@ public class MainDataContainer extends JFrame {
     }
 
     public void addPacket(Packet packet) {
-//        JScrollPanel panel = new JPanel();
-//        JLabel label = new JLabel("Test");
-
-        PacketDataPanel packetPanel = new PacketDataPanel(packet);
-        dataPanel.add(packetPanel);
-        dataPanel.revalidate();
-        dataPanel.repaint();
+       dataTable.addRow(packet);
+       dataTable.revalidate();
+       dataTable.repaint();
     }
 }

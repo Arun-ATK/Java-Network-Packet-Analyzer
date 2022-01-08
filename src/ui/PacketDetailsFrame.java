@@ -23,18 +23,7 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane networkHeaderScroll = new JScrollPane(networkHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        for (Map.Entry<String, String> entry : packet.getNetworkHeaders().entrySet()) {
-            JLabel keyLabel = new JLabel("<html>" + "<U>" + entry.getKey() + ": " + "</U> " + "</html>" + "  ");
-            JLabel valueLabel = new JLabel("<html>" + "<I>" + entry.getValue() + "</I>" + "</html>" + "  ");
-
-            JPanel keyValuePanel = new JPanel();
-            keyValuePanel.setMaximumSize(new Dimension(200, 30));
-            keyValuePanel.add(keyLabel);
-            keyValuePanel.add(valueLabel);
-
-            networkHeaderPanel.add(keyValuePanel);
-        }
+        displayHeaders(networkHeaderPanel, packet.getNetworkHeaders());
         this.add(networkHeaderScroll);
 
         /* ***********************
@@ -45,8 +34,7 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane transportHeaderScroll = new JScrollPane(transportHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        // TODO: Get Transport Headers
+        displayHeaders(transportHeaderPanel, packet.getTransportHeaders());
         this.add(transportHeaderScroll);
 
         /* *************************
@@ -57,13 +45,26 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane applicationHeaderScroll = new JScrollPane(applicationHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        // TODO: Get Application Headers
+        displayHeaders(applicationHeaderPanel, packet.getApplicationHeaders());
         this.add(applicationHeaderScroll);
 
-
-        this.setMinimumSize(new Dimension(700, 500));
+        this.setMinimumSize(new Dimension(1000, 500));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+    }
+
+    private static void displayHeaders(JPanel panel, Map<String, String> headers) {
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            JLabel keyLabel = new JLabel("<html>" + "<U>" + header.getKey() + ": " + "</U> " + "</html>" + "  ");
+            JLabel valueLabel = new JLabel("<html>" + "<I>" + header.getValue() + "</I>" + "</html>" + "  ");
+
+            JPanel keyValuePanel = new JPanel();
+            keyValuePanel.setMaximumSize(new Dimension(1000, 30));
+
+            keyValuePanel.add(keyLabel);
+            keyValuePanel.add(valueLabel);
+
+            panel.add(keyValuePanel);
+        }
     }
 }

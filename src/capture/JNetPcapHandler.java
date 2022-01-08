@@ -124,8 +124,8 @@ public class JNetPcapHandler extends PacketCapturer {
     @Override
     public void parseRawPacket(Object p) {
         if (p instanceof PcapPacket pcapPacket) {
-            System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
-            System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
+//            System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
+//            System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
 
             Ip4 ip = new Ip4();
 
@@ -140,9 +140,6 @@ public class JNetPcapHandler extends PacketCapturer {
                     if (pcapPacket.hasHeader(http)) {
                         if (tcp.source() == 80 || tcp.destination() == 80) {
                             packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.HTTP);
-
-                            System.out.println("Version: " + packet.getNetworkHeaders().get("Version"));
-                            System.out.println("Flags: " + packet.getNetworkHeaders().get("Flags"));
                         }
                     }
 
@@ -199,9 +196,6 @@ public class JNetPcapHandler extends PacketCapturer {
 
                     Http http = new Http();
                     p.getHeader(http);
-                    if (http.isResponse()) {
-                        System.out.println("Response message");
-                    }
 
                     String[] headerLines = http.header().split("\n");
 
@@ -217,6 +211,7 @@ public class JNetPcapHandler extends PacketCapturer {
                     for (Map.Entry<String, String> set : httpHeaders.entrySet()) {
                         System.out.println(set.getKey() + ": " + set.getValue());
                     }
+                    System.out.println("----");
 
                     JBuffer buffer = new JBuffer(p.getTotalSize());
                     p.transferStateAndDataTo(buffer);

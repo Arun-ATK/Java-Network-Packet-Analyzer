@@ -40,9 +40,18 @@ public class MainDataContainer extends JFrame {
             closeWindow(MainDataContainer.this);
             new StartScreen();
         });
-
         fileMenu.add(startNewCaptureMenuItem);
 
+        // Menu for displaying analytical information
+        JMenu analyticsMenu = new JMenu("Analytics");
+        JMenuItem openPacketCountMenuItem = new JMenuItem("Packet Count");
+        openPacketCountMenuItem.addActionListener(e -> {
+//            System.out.println("CHECK");
+            new AnalyticsFrame();
+        });
+        analyticsMenu.add(openPacketCountMenuItem);
+
+        // Temp menu for exiting the program
         JMenu closeMenu = new JMenu("Close");
         closeMenu.addActionListener(e -> {
             closeWindow(MainDataContainer.this);
@@ -50,6 +59,7 @@ public class MainDataContainer extends JFrame {
         });
 
         menuBar.add(fileMenu);
+        menuBar.add(analyticsMenu);
         menuBar.add(closeMenu);
 
         /* **********************************************

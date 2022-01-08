@@ -1,5 +1,6 @@
 package capture;
 
+import analyse.AnalysisController;
 import packets.HTTPPacket;
 import packets.Packet;
 import ui.MainDataContainer;
@@ -42,11 +43,13 @@ public class CaptureController {
         capturer.openPcapFile(file.getPath());
     }
 
-    public static void addNewPacket(Packet p) {
+    public static void addNewPacket(Packet packet) {
         // TEMP FILER
-        if (!(p instanceof HTTPPacket)) return;
-        packetHolder.add(p);
-        dataContainer.addPacket(packetHolder.size() - 1, p);
+        // TODO: REMOVE THIS!!!
+        if (!(packet instanceof HTTPPacket)) return;
+        packetHolder.add(packet);
+        dataContainer.addPacket(packetHolder.size() - 1, packet);
+        AnalysisController.addPacket(packet);
     }
 
     public static Packet getPacket(int id) {

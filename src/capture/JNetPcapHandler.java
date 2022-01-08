@@ -124,9 +124,6 @@ public class JNetPcapHandler extends PacketCapturer {
     @Override
     public void parseRawPacket(Object p) {
         if (p instanceof PcapPacket pcapPacket) {
-//            System.out.println("TIME: " + new Date(pcapPacket.getCaptureHeader().timestampInMillis()));
-//            System.out.println("SIZE: " + pcapPacket.getCaptureHeader().caplen());
-
             Ip4 ip = new Ip4();
 
             Tcp tcp = new Tcp();

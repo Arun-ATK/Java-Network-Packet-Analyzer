@@ -9,54 +9,60 @@ import java.util.Map;
 
 public class PacketDetailsFrame extends JFrame {
     public PacketDetailsFrame(int id) {
-        this.setTitle("Packet Details");
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         Packet packet = CaptureController.getPacket(id);
 
-        JPanel containerPanel = new JPanel();
-        containerPanel.setLayout(new BorderLayout());
-        JScrollPane containerScrollPane = new JScrollPane(containerPanel,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        JPanel leftAlignPanel = new JPanel();
-        leftAlignPanel.setLayout(new BoxLayout(leftAlignPanel, BoxLayout.Y_AXIS));
+        this.setTitle("Packet Details");
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setLayout(new GridLayout(1, 0));
 
         /* *********************
          * NETWORK LAYER HEADERS
          * *********************/
         JPanel networkHeaderPanel = new JPanel();
-        networkHeaderPanel.setLayout(new BoxLayout(networkHeaderPanel, BoxLayout.PAGE_AXIS));
+        networkHeaderPanel.setLayout(new BoxLayout(networkHeaderPanel, BoxLayout.Y_AXIS));
+        JScrollPane networkHeaderScroll = new JScrollPane(networkHeaderPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         for (Map.Entry<String, String> entry : packet.getNetworkHeaders().entrySet()) {
-            JLabel keyLabel = new JLabel("<html>" + "<b>" + entry.getKey() + ": " + "</b> " + "</html>");
-            JLabel valueLabel = new JLabel("<html>" + "<I>" + entry.getValue() + "</I>" + "</html>");
+            JLabel keyLabel = new JLabel("<html>" + "<U>" + entry.getKey() + ": " + "</U> " + "</html>" + "  ");
+            JLabel valueLabel = new JLabel("<html>" + "<I>" + entry.getValue() + "</I>" + "</html>" + "  ");
 
             JPanel keyValuePanel = new JPanel();
-            keyValuePanel.setSize(new Dimension(200, 50));
+            keyValuePanel.setMaximumSize(new Dimension(200, 30));
             keyValuePanel.add(keyLabel);
             keyValuePanel.add(valueLabel);
 
             networkHeaderPanel.add(keyValuePanel);
         }
-        leftAlignPanel.add(networkHeaderPanel);
+        this.add(networkHeaderScroll);
 
-        /* ***************
-         * BOX GREEDY GLUE
-         * ***************/
-        Box.Filler glue = (Box.Filler) Box.createVerticalGlue();
-        glue.changeShape(glue.getMinimumSize(),
-                new Dimension(0, Short.MAX_VALUE),
-                glue.getMaximumSize());
+        /* ***********************
+         * TRANSPORT LAYER HEADERS
+         * ***********************/
+        JPanel transportHeaderPanel = new JPanel();
+        transportHeaderPanel.setLayout(new BoxLayout(transportHeaderPanel, BoxLayout.Y_AXIS));
+        JScrollPane transportHeaderScroll = new JScrollPane(transportHeaderPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        leftAlignPanel.add(glue);
+        // TODO: Get Transport Headers
+        this.add(transportHeaderScroll);
+
+        /* *************************
+         * APPLICATION LAYER HEADERS
+         * *************************/
+        JPanel applicationHeaderPanel = new JPanel();
+        applicationHeaderPanel.setLayout(new BoxLayout(applicationHeaderPanel, BoxLayout.Y_AXIS));
+        JScrollPane applicationHeaderScroll = new JScrollPane(applicationHeaderPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        // TODO: Get Application Headers
+        this.add(applicationHeaderScroll);
 
 
-        containerPanel.add(leftAlignPanel, BorderLayout.WEST);
-
-        this.add(containerScrollPane, BorderLayout.CENTER);
-        this.setMaximumSize(new Dimension(500, 500));
+        this.setMinimumSize(new Dimension(700, 500));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }

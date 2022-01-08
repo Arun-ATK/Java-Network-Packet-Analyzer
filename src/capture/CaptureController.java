@@ -49,6 +49,10 @@ public class CaptureController {
         dataContainer.addPacket(packetHolder.size() - 1, p);
     }
 
+    public static Packet getPacket(int id) {
+        return packetHolder.get(id);
+    }
+
     public static void saveAsPcapFile(String s) {
         capturer.saveFile(s);
     }

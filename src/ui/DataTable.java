@@ -12,7 +12,13 @@ public class DataTable extends JTable {
     DefaultTableModel defaultTableModel;
 
     public DataTable() {
-        defaultTableModel = new DefaultTableModel(0, 0);
+        defaultTableModel = new DefaultTableModel(0, 0) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
         String[] tableHeaders = new String[] {"ID", "TIME", "PROTOCOL", "SIZE"};
         defaultTableModel.setColumnIdentifiers(tableHeaders);
@@ -26,6 +32,8 @@ public class DataTable extends JTable {
                 int row = table.rowAtPoint(point);
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
                     int id =  Integer.parseInt((String) table.getValueAt(row, 0));
+
+                     new PacketDetailsFrame(id);
                 }
             }
         });

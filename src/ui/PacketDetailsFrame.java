@@ -22,35 +22,53 @@ public class PacketDetailsFrame extends JFrame {
         /* *********************
          * NETWORK LAYER HEADERS
          * *********************/
+        JPanel networkContainer = new JPanel();
+        networkContainer.setLayout(new BorderLayout());
+        networkContainer.setBorder(new TitledBorder(new EtchedBorder(), "Network Layer Headers"));
+
         JPanel networkHeaderPanel = new JPanel();
         networkHeaderPanel.setLayout(new BoxLayout(networkHeaderPanel, BoxLayout.Y_AXIS));
         JScrollPane networkHeaderScroll = new JScrollPane(networkHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         addHeaders(networkHeaderPanel, packet.getNetworkHeaders());
-        mainHeaderPanel.add(networkHeaderScroll);
+
+        networkContainer.add(networkHeaderScroll);
+        mainHeaderPanel.add(networkContainer);
 
         /* ***********************
          * TRANSPORT LAYER HEADERS
          * ***********************/
+        JPanel transportContainer = new JPanel();
+        transportContainer.setLayout(new BorderLayout());
+        transportContainer.setBorder(new TitledBorder(new EtchedBorder(), "Transport Layer Headers"));
+
         JPanel transportHeaderPanel = new JPanel();
         transportHeaderPanel.setLayout(new BoxLayout(transportHeaderPanel, BoxLayout.Y_AXIS));
         JScrollPane transportHeaderScroll = new JScrollPane(transportHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         addHeaders(transportHeaderPanel, packet.getTransportHeaders());
-        mainHeaderPanel.add(transportHeaderScroll);
+
+        transportContainer.add(transportHeaderScroll);
+        mainHeaderPanel.add(transportContainer);
 
         /* *************************
          * APPLICATION LAYER HEADERS
          * *************************/
+        JPanel applicationContainer = new JPanel();
+        applicationContainer.setLayout(new BorderLayout());
+        applicationContainer.setBorder(new TitledBorder(new EtchedBorder(), "Application Layer Headers"));
+
         JPanel applicationHeaderPanel = new JPanel();
         applicationHeaderPanel.setLayout(new BoxLayout(applicationHeaderPanel, BoxLayout.Y_AXIS));
         JScrollPane applicationHeaderScroll = new JScrollPane(applicationHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         addHeaders(applicationHeaderPanel, packet.getApplicationHeaders());
-        mainHeaderPanel.add(applicationHeaderScroll);
+
+        applicationContainer.add(applicationHeaderScroll);
+        mainHeaderPanel.add(applicationContainer);
 
         /* ************
          * DATA SECTION

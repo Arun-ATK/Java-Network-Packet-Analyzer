@@ -56,8 +56,14 @@ public abstract class Packet {
         return new Date(receiveDate.getTime());
     }
 
-    public abstract String getData();
+    public  String getData() {
+        return data;
+    }
 
-    public abstract int getSize();
-    public abstract int getHeaderSize();
+    public int getSize() {
+        return size;
+    }
+    public int getHeaderSize() {
+        return headerSize;
+    }
 }

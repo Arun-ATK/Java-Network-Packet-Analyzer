@@ -4,6 +4,8 @@ import capture.CaptureController;
 import packets.Packet;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Map;
 
@@ -13,7 +15,9 @@ public class PacketDetailsFrame extends JFrame {
 
         this.setTitle("Packet Details");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setLayout(new GridLayout(1, 0));
+
+        JPanel mainHeaderPanel = new JPanel();
+        mainHeaderPanel.setLayout(new GridLayout(1, 0));
 
         /* *********************
          * NETWORK LAYER HEADERS
@@ -23,8 +27,8 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane networkHeaderScroll = new JScrollPane(networkHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        displayHeaders(networkHeaderPanel, packet.getNetworkHeaders());
-        this.add(networkHeaderScroll);
+        addHeaders(networkHeaderPanel, packet.getNetworkHeaders());
+        mainHeaderPanel.add(networkHeaderScroll);
 
         /* ***********************
          * TRANSPORT LAYER HEADERS
@@ -34,8 +38,8 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane transportHeaderScroll = new JScrollPane(transportHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        displayHeaders(transportHeaderPanel, packet.getTransportHeaders());
-        this.add(transportHeaderScroll);
+        addHeaders(transportHeaderPanel, packet.getTransportHeaders());
+        mainHeaderPanel.add(transportHeaderScroll);
 
         /* *************************
          * APPLICATION LAYER HEADERS
@@ -45,22 +49,43 @@ public class PacketDetailsFrame extends JFrame {
         JScrollPane applicationHeaderScroll = new JScrollPane(applicationHeaderPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        displayHeaders(applicationHeaderPanel, packet.getApplicationHeaders());
-        this.add(applicationHeaderScroll);
+        addHeaders(applicationHeaderPanel, packet.getApplicationHeaders());
+        mainHeaderPanel.add(applicationHeaderScroll);
+
+        /* ************
+         * DATA SECTION
+         * ************/
+        JPanel dataPanel = new JPanel();
+        dataPanel.setSize(new Dimension(500, 20));
+        dataPanel.setBorder(new TitledBorder(new EtchedBorder(), "HEX DUMP"));
+
+        JTextArea dataTextArea = new JTextArea(7, 50);
+        dataTextArea.setText(packet.getData());
+        dataTextArea.setEditable(false);
+
+        JScrollPane dataScroll = new JScrollPane(dataTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        dataPanel.add(dataScroll);
+
+        /* ***********
+         * FINAL STUFF
+         * ***********/
+        this.add(mainHeaderPanel, BorderLayout.CENTER);
+        this.add(dataPanel, BorderLayout.SOUTH);
 
         this.setMinimumSize(new Dimension(1000, 500));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
-    private static void displayHeaders(JPanel panel, Map<String, String> headers) {
+    private static void addHeaders(JPanel panel, Map<String, String> headers) {
         for (Map.Entry<String, String> header : headers.entrySet()) {
             JLabel keyLabel = new JLabel("<html>" + "<U>" + header.getKey() + ": " + "</U> " + "</html>" + "  ");
             JLabel valueLabel = new JLabel("<html>" + "<I>" + header.getValue() + "</I>" + "</html>" + "  ");
 
             JPanel keyValuePanel = new JPanel();
-            keyValuePanel.setMaximumSize(new Dimension(1000, 30));
-
+            keyValuePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
             keyValuePanel.add(keyLabel);
             keyValuePanel.add(valueLabel);
 

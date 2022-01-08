@@ -23,19 +23,4 @@ public class HTTPPacket extends Packet {
         this.size = size;
         this.headerSize = headerSize;
     }
-
-    @Override
-    public String getData() {
-        return null;
-    }
-
-    @Override
-    public int getSize() {
-        return size;
-    }
-
-    @Override
-    public int getHeaderSize() {
-        return 0;
-    }
 }

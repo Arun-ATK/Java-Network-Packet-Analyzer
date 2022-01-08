@@ -200,18 +200,20 @@ public class JNetPcapHandler extends PacketCapturer {
                     String[] headerLines = http.header().split("\n");
 
                     Map<String, String> httpHeaders = new HashMap<>();
+
+                    // TODO: Handle first line of HTTP Message
                     for (String headerLine : headerLines) {
-                        String[] line = headerLine.split(":");
+                        int splitIndex = headerLine.indexOf(':');
 
                         try {
-                            httpHeaders.put(line[0].trim(), line[1].trim());
-                        } catch (ArrayIndexOutOfBoundsException ignored) {}
-                    }
+                            String[] line = new String[] { headerLine.substring(0, splitIndex),
+                                headerLine.substring(splitIndex + 1) };
 
-                    for (Map.Entry<String, String> set : httpHeaders.entrySet()) {
-                        System.out.println(set.getKey() + ": " + set.getValue());
+                            httpHeaders.put(line[0].trim(), line[1].trim());
+                        } catch (IndexOutOfBoundsException ignored) {
+                            System.out.println(headerLine);
+                        }
                     }
-                    System.out.println("----");
 
                     JBuffer buffer = new JBuffer(p.getTotalSize());
                     p.transferStateAndDataTo(buffer);

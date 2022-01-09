@@ -78,7 +78,6 @@ public class MainDataContainer extends JFrame {
         /* **********************************************
          *                  MAIN PANEL
          * All Captured packets will be displayed here
-         * TODO: Double click to view additional details
          * **********************************************/
         dataTable = new DataTable();
         JScrollPane dataScrollPane = new JScrollPane(dataTable,

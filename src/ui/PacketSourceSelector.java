@@ -54,7 +54,6 @@ public class PacketSourceSelector extends JFrame {
          * ----------------------------- */
         if (mode == Mode.OFFLINE) {
             selectSourceButton.setText("Select File");
-            // TODO JFileChooser thing
             JButton browseButton = new JButton("Browse...");
             browseButton.addActionListener(e -> {
                 JFrame fileSelectFrame = new JFrame("Select File");
@@ -83,7 +82,6 @@ public class PacketSourceSelector extends JFrame {
             for (NetworkInterface anInterface : interfaces) {
                 interfaceComboBox.addItem(anInterface);
             }
-
 
             selectedLabel.setText(interfaceComboBox.getItemAt(0).getDescription());
             interfaceComboBox.addItemListener(e -> {

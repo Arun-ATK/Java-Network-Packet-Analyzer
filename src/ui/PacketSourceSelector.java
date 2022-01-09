@@ -121,21 +121,4 @@ public class PacketSourceSelector extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
-
-    private File getSelectedFile() {
-        JFrame fileFrame = new JFrame("Select File");
-        fileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        JFileChooser fileChooser = new JFileChooser("captures");
-        int result = fileChooser.showOpenDialog(fileFrame);
-
-
-        fileFrame.add(fileChooser);
-
-        fileFrame.pack();
-        fileFrame.setLocationRelativeTo(PacketSourceSelector.this);
-        fileFrame.setVisible(true);
-
-        return new File("");
-    }
 }

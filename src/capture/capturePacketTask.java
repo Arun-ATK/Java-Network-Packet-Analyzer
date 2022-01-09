@@ -34,6 +34,7 @@ public class capturePacketTask implements Runnable {
                     System.out.println("Some error occurred");
                     cont = false;
                 }
+                case Pcap.NEXT_EX_TIMEDOUT -> System.out.println("Timed Out");
                 default -> System.out.println("WHAT: " + stat);
             }
 

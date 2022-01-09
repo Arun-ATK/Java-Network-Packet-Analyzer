@@ -59,9 +59,7 @@ public class MainDataContainer extends JFrame {
         // Menu for displaying analytical information
         JMenu analyticsMenu = new JMenu("Analytics");
         JMenuItem openPacketCountMenuItem = new JMenuItem("Packet Count");
-        openPacketCountMenuItem.addActionListener(e -> {
-            new AnalyticsFrame();
-        });
+        openPacketCountMenuItem.addActionListener(e -> new AnalyticsFrame());
         analyticsMenu.add(openPacketCountMenuItem);
 
 
@@ -90,6 +88,7 @@ public class MainDataContainer extends JFrame {
 
     public static void closeWindow(JFrame frame) {
         SystemController.stopCaptureLibrary();
+        CaptureController.stopCapture();
         frame.dispose();
     }
 

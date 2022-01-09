@@ -56,7 +56,7 @@ public class CaptureController {
         return packetHolder.get(id);
     }
 
-    public static void saveAsPcapFile(String s) {
-        capturer.saveFile(s);
+    public static void saveAsPcapFile(File file) {
+        capturer.saveFile(file.getPath());
     }
 }

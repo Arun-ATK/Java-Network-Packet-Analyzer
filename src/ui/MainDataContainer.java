@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 public class MainDataContainer extends JFrame {
     DataTable dataTable;
@@ -47,14 +48,22 @@ public class MainDataContainer extends JFrame {
             new PacketSourceSelector(PacketSourceSelector.Mode.OFFLINE);
         });
 
-//        JMenuItem saveAsPcapFileMenuItem = new JMenuItem("Save Capture");
-//        saveAsPcapFileMenuItem.addActionListener(e -> {
-//            // TODO: Open file chooser
-//            CaptureController.saveAsPcapFile("Temp.pcap");
-//        });
+        JMenuItem saveAsPcapFileMenuItem = new JMenuItem("Save Capture");
+        saveAsPcapFileMenuItem.addActionListener(e -> {
+            JFrame saveFileFrame = new JFrame("Save As...");
+            saveFileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JFileChooser fileChooser = new JFileChooser("captures");
+            int result = fileChooser.showOpenDialog(saveFileFrame);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File saveFile = fileChooser.getSelectedFile();
+                CaptureController.saveAsPcapFile(saveFile);
+            }
+        });
 
         fileMenu.add(startNewLiveCaptureMenuItem);
         fileMenu.add(openPcapFileMenuItem);
+        fileMenu.add(saveAsPcapFileMenuItem);
 
         // Menu for displaying analytical information
         JMenu analyticsMenu = new JMenu("Analytics");

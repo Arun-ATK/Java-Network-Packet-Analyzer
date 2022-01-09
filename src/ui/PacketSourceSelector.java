@@ -65,6 +65,8 @@ public class PacketSourceSelector extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     selectedFile = fileChooser.getSelectedFile();
                 }
+
+                selectedLabel.setText(selectedFile.getName());
             });
 
             this.add(browseButton);

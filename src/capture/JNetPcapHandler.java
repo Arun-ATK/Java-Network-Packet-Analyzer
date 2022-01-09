@@ -67,9 +67,6 @@ public class JNetPcapHandler extends PacketCapturer {
             if (pcap == null) {
                 System.out.println("ERR: " + errbuf);
             }
-//            else {
-//                startCapture();
-//            }
         }
     }
 

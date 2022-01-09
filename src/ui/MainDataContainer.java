@@ -32,35 +32,41 @@ public class MainDataContainer extends JFrame {
          * *******************************************/
         JMenuBar menuBar = new JMenuBar();
 
+        // Menu for saving pcap files and starting new captures
         JMenu fileMenu = new JMenu("File");
 
-        // Starting a new Capture should close the current window, and then open the Start Screen
-        JMenuItem startNewCaptureMenuItem = new JMenuItem("Start new Capture");
-        startNewCaptureMenuItem.addActionListener(e -> {
+        JMenuItem startNewLiveCaptureMenuItem = new JMenuItem("Start new Live Capture");
+        startNewLiveCaptureMenuItem.addActionListener(e -> {
             closeWindow(MainDataContainer.this);
-            new StartScreen();
+            new PacketSourceSelector(PacketSourceSelector.Mode.LIVE);
         });
-        fileMenu.add(startNewCaptureMenuItem);
+
+        JMenuItem openPcapFileMenuItem = new JMenuItem("Open Pcap File");
+        openPcapFileMenuItem.addActionListener(e -> {
+            closeWindow(MainDataContainer.this);
+            new PacketSourceSelector(PacketSourceSelector.Mode.OFFLINE);
+        });
+
+//        JMenuItem saveAsPcapFileMenuItem = new JMenuItem("Save Capture");
+//        saveAsPcapFileMenuItem.addActionListener(e -> {
+//            // TODO: Open file chooser
+//            CaptureController.saveAsPcapFile("Temp.pcap");
+//        });
+
+        fileMenu.add(startNewLiveCaptureMenuItem);
+        fileMenu.add(openPcapFileMenuItem);
 
         // Menu for displaying analytical information
         JMenu analyticsMenu = new JMenu("Analytics");
         JMenuItem openPacketCountMenuItem = new JMenuItem("Packet Count");
         openPacketCountMenuItem.addActionListener(e -> {
-//            System.out.println("CHECK");
             new AnalyticsFrame();
         });
         analyticsMenu.add(openPacketCountMenuItem);
 
-        // Temp menu for exiting the program
-        JMenu closeMenu = new JMenu("Close");
-        closeMenu.addActionListener(e -> {
-            closeWindow(MainDataContainer.this);
-            System.exit(0);
-        });
 
         menuBar.add(fileMenu);
         menuBar.add(analyticsMenu);
-        menuBar.add(closeMenu);
 
         /* **********************************************
          *                  MAIN PANEL

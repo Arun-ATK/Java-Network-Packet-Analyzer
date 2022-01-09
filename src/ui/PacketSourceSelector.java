@@ -14,7 +14,7 @@ public class PacketSourceSelector extends JFrame {
         OFFLINE,
     }
 
-    String selectedFile;
+    File selectedFile;
     int selectedInterfaceID;
 
     public PacketSourceSelector(Mode mode) {
@@ -55,11 +55,19 @@ public class PacketSourceSelector extends JFrame {
         if (mode == Mode.OFFLINE) {
             selectSourceButton.setText("Select File");
             // TODO JFileChooser thing
-            JFileChooser fileChooser = new JFileChooser("captures");
-//            setUpFileChooser(fileChooser);
+            JButton browseButton = new JButton("Browse...");
+            browseButton.addActionListener(e -> {
+                JFrame fileSelectFrame = new JFrame("Select File");
+                fileSelectFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            fileChooser.addActionListener(e -> selectedFile = fileChooser.getName());
+                JFileChooser fileChooser = new JFileChooser("captures");
+                int result = fileChooser.showOpenDialog(fileSelectFrame);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    selectedFile = fileChooser.getSelectedFile();
+                }
+            });
 
+            this.add(browseButton);
         }
 
         /* -----------------------------
@@ -67,7 +75,6 @@ public class PacketSourceSelector extends JFrame {
          * ----------------------------- */
         else if (mode == Mode.LIVE) {
             selectSourceButton.setText("Select Interface");
-            // TODO DropDown Menu displaying all the available interfaces
             JComboBox<NetworkInterface> interfaceComboBox = new JComboBox<>();
 
             ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
@@ -96,13 +103,13 @@ public class PacketSourceSelector extends JFrame {
                 CaptureController.openInterfaceForCapture(selectedInterfaceID);
             }
             else if (mode == Mode.OFFLINE) {
-                CaptureController.openPcapFile(new File("captures/newFile.pcap"));
+                System.out.println(selectedFile.getName());
+                CaptureController.openPcapFile(selectedFile);
             }
 
             new MainDataContainer();
             this.dispose();
         });
-
 
         // Blank Panel for spacing
         this.add(new JPanel());
@@ -115,14 +122,20 @@ public class PacketSourceSelector extends JFrame {
         this.setVisible(true);
     }
 
-    private void setUpFileChooser(JFileChooser fileChooser) {
+    private File getSelectedFile() {
         JFrame fileFrame = new JFrame("Select File");
-        fileFrame.add(fileChooser);
         fileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        JFileChooser fileChooser = new JFileChooser("captures");
+        int result = fileChooser.showOpenDialog(fileFrame);
+
+
+        fileFrame.add(fileChooser);
 
         fileFrame.pack();
         fileFrame.setLocationRelativeTo(PacketSourceSelector.this);
         fileFrame.setVisible(true);
 
+        return new File("");
     }
 }

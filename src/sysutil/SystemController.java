@@ -1,7 +1,6 @@
 package sysutil;
 
 import ui.StartScreen;
-import ui.TempUI;
 
 import java.io.IOException;
 
@@ -13,9 +12,6 @@ public class SystemController {
 
         osType = OsCheck.getOperatingSystemType();
         System.out.println("OS: " + osType);
-
-//        ui.TempUI tui = new TempUI();
-//        tui.startUI();
 
         new StartScreen();
     }

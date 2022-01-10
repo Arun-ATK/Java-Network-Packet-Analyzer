@@ -26,6 +26,9 @@ public abstract class Packet {
     public Protocol getProtocol() {
         return protocol;
     }
+    public int getProtocolLayer() {
+        return protocolLayer;
+    }
 
     public Map<String, String> getNetworkHeaders() {
         if (protocolLayer >= 3) {

@@ -1,7 +1,7 @@
 package capture;
 
 import analyse.AnalysisController;
-import packets.HTTPPacket;
+import packets.ApplicationPacket;
 import packets.Packet;
 import ui.MainDataContainer;
 
@@ -44,9 +44,6 @@ public class CaptureController {
     }
 
     public static void addNewPacket(Packet packet) {
-        // TEMP FILER
-        // TODO: REMOVE THIS!!!
-        if (!(packet instanceof HTTPPacket)) return;
         packetHolder.add(packet);
         dataContainer.addPacket(packetHolder.size() - 1, packet);
         AnalysisController.addPacket(packet);

@@ -1,25 +1,17 @@
 package packets;
 
+import java.util.Date;
 import java.util.Map;
 
 public class DefaultPacket extends Packet {
-    @Override
-    public Map<String, String> getNetworkHeaders() {
-        return null;
-    }
-
-    @Override
-    public String getData() {
-        return null;
-    }
-
-    @Override
-    public int getSize() {
-        return 0;
-    }
-
-    @Override
-    public int getHeaderSize() {
-        return 0;
+    public DefaultPacket(String data,
+                         Date receiveDate,
+                         int size,
+                         int headerSize) {
+        this.data = data;
+        this.receiveDate = receiveDate;
+        this.size = size;
+        this.headerSize = headerSize;
+        this.protocol = Protocol.Unknown;
     }
 }

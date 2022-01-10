@@ -19,6 +19,8 @@ public class PacketDetailsFrame extends JFrame {
         JPanel mainHeaderPanel = new JPanel();
         mainHeaderPanel.setLayout(new GridLayout(1, 0));
 
+        //TODO: Check if packet contains headers before displaying
+
         /* *********************
          * NETWORK LAYER HEADERS
          * *********************/

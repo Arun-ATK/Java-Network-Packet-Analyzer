@@ -10,6 +10,15 @@ public class SystemController {
     public static void main(String[] args) {
         System.out.println("Java Packet Analyser project");
 
+        try {
+            System.loadLibrary("jnetpcap");
+            System.out.println("Done");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            System.out.println("no");
+            System.exit(0);
+        }
+
         osType = OsCheck.getOperatingSystemType();
         System.out.println("OS: " + osType);
 

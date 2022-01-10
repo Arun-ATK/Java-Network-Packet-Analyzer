@@ -59,7 +59,7 @@ public class PacketSourceSelector extends JFrame {
                 JFrame fileSelectFrame = new JFrame("Select File");
                 fileSelectFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-                JFileChooser fileChooser = new JFileChooser("captures");
+                JFileChooser fileChooser = new JFileChooser(".");
                 int result = fileChooser.showOpenDialog(fileSelectFrame);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     selectedFile = fileChooser.getSelectedFile();

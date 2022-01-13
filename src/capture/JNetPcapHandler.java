@@ -5,10 +5,10 @@ import org.jnetpcap.PcapDumper;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.protocol.network.Ip4;
-import org.jnetpcap.protocol.tcpip.Http;
-import org.jnetpcap.protocol.tcpip.Tcp;
-import org.jnetpcap.protocol.tcpip.Udp;
+import org.jnetpcap.protocol.tcpip.*;
+
 import packets.*;
+import sysutil.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class JNetPcapHandler extends PacketCapturer {
 
         int statusCode = Pcap.findAllDevs(interfaces, errbuf);
         if (statusCode != Pcap.OK) {
-            System.out.println("Error occurred: " + errbuf);
+            Logger.getLogger().writeMessage("Error (finding interfaces): " + errbuf);
         }
         else {
-            System.out.println(interfaces.size() + " interfaces found!");
+            Logger.getLogger().writeMessage(interfaces.size() + "Interfaces found on system");
 
             for (int i = 0; i < interfaces.size(); ++i) {
                 networkInterfaces.add(new NetworkInterface(
@@ -44,29 +44,34 @@ public class JNetPcapHandler extends PacketCapturer {
     }
 
     @Override
-    public void openPcapFile(String filepath) {
-        File file = new File(filepath);
+    public boolean openPcapFile(File file) {
         String filename = file.getName();
 
-        // TODO: Replace with exceptions thrown to GUI
         if (!file.exists()) {
-            System.out.println("File doesn't exist!");
+            Logger.getLogger().writeMessage("File not found: " + file.getAbsolutePath());
+            return false;
         }
-        else if (!filename.substring(filename.lastIndexOf(".") + 1).equals("pcap")) {
-            System.out.println("File is not a pcap file!");
+
+        if (!filename.substring(filename.lastIndexOf(".") + 1).equals("pcap")) {
+            Logger.getLogger().writeMessage("File not Pcap File: " + file.getAbsolutePath());
+            return false;
         }
-        else {
-            StringBuilder errbuf = new StringBuilder();
-            System.out.println("FILEPATH: " + file.getPath());
-            pcap = Pcap.openOffline(file.getPath(), errbuf);
-            if (pcap == null) {
-                System.out.println("ERR: " + errbuf);
-            }
+
+        StringBuilder errbuf = new StringBuilder();
+        pcap = Pcap.openOffline(file.getPath(), errbuf);
+        if (pcap == null) {
+            System.out.println("test");
+            Logger.getLogger().writeMessage("Error (opening pcap): " + errbuf);
+            return false;
         }
+
+        Logger.getLogger().writeMessage("File opened: " + file.getAbsolutePath());
+        System.out.println("test2");
+        return true;
     }
 
     @Override
-    public void openInterface(int interfaceID) {
+    public boolean openInterface(int interfaceID) {
         String interfaceName = interfaces.get(interfaceID).getName();
         int snaplen = 64 * 1024;
         int promiscuous = Pcap.MODE_PROMISCUOUS;
@@ -84,9 +89,13 @@ public class JNetPcapHandler extends PacketCapturer {
          */
         pcap = Pcap.openLive(interfaceName, snaplen, promiscuous, timeout, errbuf);
         if (pcap == null ) {
-            System.out.println("ERR: " + errbuf);
+            Logger.getLogger().writeMessage("Error (Opening interface): " + errbuf);
+            return false;
         }
-//        startCapture();
+
+        Logger.getLogger().writeMessage("Interface opened: " +
+                interfaces.get(interfaceID).getDescription());
+        return true;
     }
 
     @Override
@@ -96,7 +105,7 @@ public class JNetPcapHandler extends PacketCapturer {
             captureThread.start();
         }
         else {
-            System.out.println("Already capturing packets!");
+            Logger.getLogger().writeMessage("Already capturing packets!");
         }
     }
 
@@ -154,7 +163,7 @@ public class JNetPcapHandler extends PacketCapturer {
             CaptureController.addNewPacket(packet);
         }
         else {
-            System.out.println("Invalid object sent!");
+            Logger.getLogger().writeMessage("Received malformed packet");
         }
     }
 

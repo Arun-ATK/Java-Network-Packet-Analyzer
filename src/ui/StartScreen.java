@@ -8,7 +8,7 @@ public class StartScreen extends JFrame {
         this.setTitle("Java Packet Analyser");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new GridLayout(0, 1));
-        this.setSize(300,100);
+        this.setSize(300,125);
 
         JButton liveCaptureButton = new JButton("Start Live Capture");
         JButton openPcapFileButton = new JButton("Open Pcap File");

@@ -2,6 +2,7 @@ package ui;
 
 import capture.CaptureController;
 import capture.NetworkInterface;
+import sysutil.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class PacketSourceSelector extends JFrame {
         OFFLINE,
     }
 
-    File selectedFile;
+    File selectedFile = null;
     int selectedInterfaceID;
 
     public PacketSourceSelector(Mode mode) {
@@ -54,6 +55,7 @@ public class PacketSourceSelector extends JFrame {
          * ----------------------------- */
         if (mode == Mode.OFFLINE) {
             selectSourceButton.setText("Select File");
+
             JButton browseButton = new JButton("Browse...");
             browseButton.addActionListener(e -> {
                 JFrame fileSelectFrame = new JFrame("Select File");
@@ -64,7 +66,7 @@ public class PacketSourceSelector extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     selectedFile = fileChooser.getSelectedFile();
                 }
-
+                System.out.println(selectedFile.getName());
                 selectedLabel.setText(selectedFile.getName());
             });
 
@@ -99,16 +101,26 @@ public class PacketSourceSelector extends JFrame {
          * ACTIONLISTENER FOR SELECT BUTTON
          * ********************************/
         selectSourceButton.addActionListener(e -> {
+            boolean allGood = false;
             if (mode == Mode.LIVE) {
-                CaptureController.openInterfaceForCapture(selectedInterfaceID);
+                allGood = CaptureController.openInterfaceForCapture(selectedInterfaceID);
             }
             else if (mode == Mode.OFFLINE) {
-                System.out.println(selectedFile.getName());
-                CaptureController.openPcapFile(selectedFile);
+                if (selectedFile != null) {
+                    allGood = CaptureController.openPcapFile(selectedFile);
+                }
+                else {
+                    Logger.getLogger().writeMessage("No file selected");
+                }
             }
 
-            new MainDataContainer();
-            this.dispose();
+            if (allGood) {
+                new MainDataContainer();
+                this.dispose();
+            }
+            else {
+                // TODO: Error UI
+            }
         });
 
         // Blank Panel for spacing

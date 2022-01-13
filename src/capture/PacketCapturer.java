@@ -1,5 +1,6 @@
 package capture;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public abstract class PacketCapturer {
@@ -7,9 +8,9 @@ public abstract class PacketCapturer {
 
     public abstract ArrayList<NetworkInterface> getNetworkInterfaces();
 
-    public abstract void openPcapFile(String filepath);
+    public abstract boolean openPcapFile(File file);
 
-    public abstract void openInterface(int interfaceNum);
+    public abstract boolean openInterface(int interfaceNum);
 
     public abstract void startCapture();
     public abstract void stopCapture();

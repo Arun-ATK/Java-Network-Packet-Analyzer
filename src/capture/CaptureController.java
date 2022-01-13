@@ -1,7 +1,6 @@
 package capture;
 
 import analyse.AnalysisController;
-import packets.ApplicationPacket;
 import packets.Packet;
 import ui.MainDataContainer;
 
@@ -27,8 +26,8 @@ public class CaptureController {
         return interfaces;
     }
 
-    public static void openInterfaceForCapture(int interfaceID) {
-        capturer.openInterface(interfaceID);
+    public static boolean openInterfaceForCapture(int interfaceID) {
+        return capturer.openInterface(interfaceID);
     }
 
     public static void startCapture(MainDataContainer dataContainer) {
@@ -39,8 +38,8 @@ public class CaptureController {
         capturer.stopCapture();
     }
 
-    public static void openPcapFile(File file) {
-        capturer.openPcapFile(file.getPath());
+    public static boolean openPcapFile(File file) {
+        return capturer.openPcapFile(file);
     }
 
     public static void addNewPacket(Packet packet) {

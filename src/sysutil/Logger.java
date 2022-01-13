@@ -42,8 +42,9 @@ public class Logger {
         }
     }
 
-    public void closeLog() {
+    private void closeLog() {
         try {
+            System.out.println("Log closed");
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

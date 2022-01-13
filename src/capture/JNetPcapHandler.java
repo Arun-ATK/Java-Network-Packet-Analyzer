@@ -68,7 +68,6 @@ public class JNetPcapHandler extends PacketCapturer {
         }
 
         Logger.getLogger().writeMessage("File opened: " + file.getAbsolutePath());
-        System.out.println("test2");
         return true;
     }
 

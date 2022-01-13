@@ -9,23 +9,13 @@ import java.util.ArrayList;
 
 public class CaptureController {
     private static final PacketCapturer capturer = new JNetPcapHandler();
-
     private static ArrayList<Packet> packetHolder;
 
     static MainDataContainer dataContainer;
     static boolean paused = false;
 
-
-
     public static ArrayList<NetworkInterface> getInterfaces() {
-        ArrayList<NetworkInterface> interfaces = capturer.getNetworkInterfaces();
-        for (NetworkInterface anInterface : interfaces) {
-            System.out.println("INTERFACE ID: " + anInterface.getId());
-            System.out.println("Interface Name: " + anInterface.getDescription());
-            System.out.println("----");
-        }
-
-        return interfaces;
+        return capturer.getNetworkInterfaces();
     }
 
     public static boolean openInterfaceForCapture(int interfaceID) {
@@ -40,14 +30,14 @@ public class CaptureController {
         AnalysisController.resetCount();
         capturer.startCapture();
     }
+
     public static void resumeCapture() {
         paused = false;
-
         capturer.startCapture();
     }
+
     public static void stopCapture() {
         paused = true;
-
         capturer.stopCapture();
     }
 

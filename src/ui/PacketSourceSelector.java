@@ -66,7 +66,6 @@ public class PacketSourceSelector extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     selectedFile = fileChooser.getSelectedFile();
                 }
-                System.out.println(selectedFile.getName());
                 selectedLabel.setText(selectedFile.getName());
             });
 
@@ -110,6 +109,7 @@ public class PacketSourceSelector extends JFrame {
                     allGood = CaptureController.openPcapFile(selectedFile);
                 }
                 else {
+                    new ErrorScreen("No file selected!");
                     Logger.getLogger().writeMessage("No file selected");
                 }
             }
@@ -117,9 +117,6 @@ public class PacketSourceSelector extends JFrame {
             if (allGood) {
                 new MainDataContainer();
                 this.dispose();
-            }
-            else {
-                // TODO: Error UI
             }
         });
 

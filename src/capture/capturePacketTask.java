@@ -3,6 +3,7 @@ package capture;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.nio.JMemory;
 import org.jnetpcap.packet.PcapPacket;
+import sysutil.Logger;
 
 public class capturePacketTask implements Runnable {
     PacketCapturer packetCapturer;
@@ -27,19 +28,17 @@ public class capturePacketTask implements Runnable {
                     packetCapturer.parseRawPacket(p);
                 }
                 case Pcap.NEXT_EX_EOF -> {
-                    System.out.println("File ended");
+                    Logger.getLogger().writeMessage("File Ended");
                     cont = false;
                 }
                 case Pcap.NEXT_EX_NOT_OK -> {
-                    System.out.println("Some error occurred");
+                    Logger.getLogger().writeMessage("Error occurred while receiving packet");
                     cont = false;
                 }
-                case Pcap.NEXT_EX_TIMEDOUT -> System.out.println("Timed Out");
-                default -> System.out.println("WHAT: " + stat);
             }
 
             if (Thread.currentThread().isInterrupted()) {
-                System.out.println("INTERRUPT!");
+                Logger.getLogger().writeMessage("Capture Thread interrupted");
                 break;
             }
         }

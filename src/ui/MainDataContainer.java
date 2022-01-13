@@ -27,6 +27,8 @@ public class MainDataContainer extends JFrame {
             }
         });
 
+        this.setTitle("Packet Capture");
+
         /* *******************************************
          *              MENU BAR SECTION
          * *******************************************/

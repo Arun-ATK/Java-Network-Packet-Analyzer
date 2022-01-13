@@ -8,19 +8,21 @@ public class SystemController {
     private static OsCheck.OSType osType;
 
     public static void main(String[] args) {
-        System.out.println("Java Packet Analyser project");
+        // Adding ShutDown hook to ensure logger safely closes it's output stream
+        Runtime.getRuntime().addShutdownHook(Logger.getLogger().shutDownThread);
+
+        Logger.getLogger().writeMessage("Java Packet Sniffer starting...");
 
         try {
             System.loadLibrary("jnetpcap");
-            System.out.println("Done");
+            Logger.getLogger().writeMessage("JNetPcap Loaded");
         } catch (Exception exception) {
-            exception.printStackTrace();
-            System.out.println("no");
-            System.exit(0);
+            Logger.getLogger().writeMessage(exception.getMessage());
+            System.exit(-1);
         }
 
         osType = OsCheck.getOperatingSystemType();
-        System.out.println("OS: " + osType);
+        Logger.getLogger().writeMessage("Detected OS: " + osType);
 
         new StartScreen();
     }
@@ -28,42 +30,40 @@ public class SystemController {
     private static void startWinPcap() throws IOException {
         Runtime.getRuntime().exec("cmd.exe /C start net start npf");
 
-        System.out.println("WinPcap start cmd executed");
+        Logger.getLogger().writeMessage("WinPcap Started");
     }
 
     private static void stopWinPcap() throws IOException {
         Runtime.getRuntime().exec("cmd.exe /C start net stop npf");
 
-        System.out.println("Issued WinPcap stop cmd");
+        Logger.getLogger().writeMessage("WinPcap Stopped");
     }
 
-    // Temporary wrappers to starting and stopping WinPcap
+    // Wrappers to starting and stopping necessary capture library
     public static void startCaptureLibrary() {
         try {
             if (osType == OsCheck.OSType.Windows) {
-                System.out.println("Starting WinPcap...");
                 startWinPcap();
             } else {
-                System.out.println("Unsupported OS");
+                Logger.getLogger().writeMessage("Unsupported OS");
                 System.exit(-1);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger().writeMessage(e.getMessage());
         }
     }
 
     public static void stopCaptureLibrary() {
         try {
             if (osType == OsCheck.OSType.Windows) {
-                System.out.println("Stopping WinPcap...");
                 stopWinPcap();
             }
             else {
-                System.out.println("Unknown OS type while closing (not possible)!");
+                Logger.getLogger().writeMessage("Unsupported OS while closing");
                 System.exit(-1);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger().writeMessage(e.getMessage());
         }
     }
 }

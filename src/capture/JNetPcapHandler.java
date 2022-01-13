@@ -3,9 +3,7 @@ package capture;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapDumper;
 import org.jnetpcap.PcapIf;
-import org.jnetpcap.nio.JBuffer;
 import org.jnetpcap.packet.PcapPacket;
-import org.jnetpcap.packet.format.FormatUtils;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.protocol.tcpip.Tcp;
@@ -14,9 +12,6 @@ import packets.*;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JNetPcapHandler extends PacketCapturer {
     private ArrayList<PcapIf> interfaces;
@@ -174,137 +169,4 @@ public class JNetPcapHandler extends PacketCapturer {
         pcapDumper.flush();
     }
 
-    private static class PacketFactory {
-        private PacketFactory() {}
-
-        static Packet createPacket(PcapPacket p, Packet.Protocol protocol) {
-            Date receiveDate = getReceiveDate(p);
-            int size = getTotalSize(p);
-            int headerSize = getHeaderSize(p);
-
-            JBuffer buffer = new JBuffer(p.getTotalSize());
-            p.transferStateAndDataTo(buffer);
-            String data = buffer.toHexdump();
-
-            switch (protocol) {
-                case HTTP -> {
-                    Map<String, String> ipHeaders = getIpHeaders(p);
-                    Map<String, String> tcpHeader = getTcpHeaders(p);
-
-                    Http http = new Http();
-                    p.getHeader(http);
-
-                    String[] headerLines = http.header().split("\n");
-                    Map<String, String> httpHeaders = new HashMap<>();
-
-                    // TODO: Handle first line of HTTP Message
-                    for (String headerLine : headerLines) {
-                        int splitIndex = headerLine.indexOf(':');
-                        try {
-                            String[] line = new String[] { headerLine.substring(0, splitIndex),
-                                headerLine.substring(splitIndex + 1) };
-
-                            httpHeaders.put(line[0].trim(), line[1].trim());
-                        } catch (IndexOutOfBoundsException ignored) {
-                            System.out.println(headerLine);
-                        }
-                    }
-
-                    return new ApplicationPacket(ipHeaders, tcpHeader, httpHeaders,
-                            data, receiveDate, size, headerSize,
-                            protocol);
-                }
-                case TCP -> {
-                    Map<String, String> ipHeaders = getIpHeaders(p);
-                    Map<String, String> tcpHeaders = getTcpHeaders(p);
-
-                    return new TransportPacket(ipHeaders, tcpHeaders, data,
-                            receiveDate, size, headerSize,
-                            protocol);
-                }
-                case UDP -> {
-                    Map<String, String> ipHeaders = getIpHeaders(p);
-
-                    Udp udp = new Udp();
-                    p.getHeader(udp);
-
-                    Map<String, String> udpHeaders = new HashMap<>();
-                    udpHeaders.put("Source Port", String.valueOf(udp.source()));
-                    udpHeaders.put("Destination Port", String.valueOf(udp.destination()));
-                    udpHeaders.put("UDP Length", String.valueOf(udp.length()));
-                    udpHeaders.put("Checksum", String.valueOf(udp.checksum()));
-                    udpHeaders.put("[Checksum validity]", String.valueOf(udp.isChecksumValid()));
-
-                    return new TransportPacket(ipHeaders, udpHeaders, data,
-                            receiveDate, size, headerSize, protocol);
-                }
-                case IP -> {
-                    Map<String, String> ipHeaders = getIpHeaders(p);
-
-                    return new NetworkPacket(ipHeaders, data,
-                            receiveDate, size, headerSize, protocol);
-                }
-            }
-            return new DefaultPacket(data, receiveDate, size, headerSize);
-        }
-
-        private static Map<String, String> getIpHeaders(PcapPacket p) {
-            Map<String, String> headers = new HashMap<>();
-            Ip4 ip = new Ip4();
-            p.getHeader(ip);
-
-            headers.put("Version", String.valueOf(ip.version()));
-            headers.put("Header Length", String.valueOf(ip.hlen()));
-            headers.put("Service Type", String.valueOf(ip.type()));
-            headers.put("Total Length", String.valueOf(ip.length()));
-            headers.put("Identification", String.valueOf(ip.id()));
-
-            int f = ip.flags();
-            String flags = "";
-            for (int i = 2; i >= 0; --i) {
-                flags = flags.concat(String.valueOf((f >>> i) & 1));
-            }
-
-            headers.put("Flags", flags);
-            headers.put("Fragmentation Offset", String.valueOf(ip.offset()));
-            headers.put("Source IP", FormatUtils.ip(ip.source()));
-            headers.put("Destination IP", FormatUtils.ip(ip.destination()));
-
-            return headers;
-        }
-
-        private static Map<String, String> getTcpHeaders(PcapPacket p) {
-            Map<String, String> headers = new HashMap<>();
-            Tcp tcp = new Tcp();
-            p.getHeader(tcp);
-
-            headers.put("Source Port", String.valueOf(tcp.source()));
-            headers.put("Destination Port", String.valueOf(tcp.destination()));
-            headers.put("Sequence Number", String.valueOf(tcp.seq()));
-            headers.put("Acknowledgement Number", String.valueOf(tcp.ack()));
-            headers.put("Header Length", String.valueOf(tcp.hlen()));
-
-            int f = tcp.flags();
-            String flags = "";
-            for (int i = 5; i >= 0; --i) {
-                flags = flags.concat(String.valueOf((f >>> i) & 1));
-            }
-            headers.put("Flags", flags);
-            headers.put("Advertised Window", String.valueOf(tcp.window()));
-            headers.put("Checksum", String.valueOf(tcp.checksum()));
-            headers.put("Urgent Pointer", String.valueOf(tcp.urgent()));
-
-            return headers;
-        }
-
-        private static int getTotalSize(PcapPacket p) {
-            return p.getTotalSize();
-        }
-        private static Date getReceiveDate(PcapPacket p) {
-            return new Date(p.getCaptureHeader().timestampInMillis());
-        }
-        private static int getHeaderSize(PcapPacket p) {
-            return p.getCaptureHeader().hdr_len();
-        }
-    }
 }

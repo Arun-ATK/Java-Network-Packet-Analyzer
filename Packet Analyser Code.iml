@@ -17,7 +17,7 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="" scope="PROVIDED">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES />
         <JAVADOC />
@@ -27,5 +27,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" exported="" scope="RUNTIME" name="dll" level="project" />
   </component>
 </module>

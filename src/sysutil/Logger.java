@@ -17,9 +17,10 @@ public class Logger {
     private Logger() {
         try {
             File logFile = new File("Packet_Sniffer_LOG.txt");
-            logFile.createNewFile();
+            boolean exists = logFile.createNewFile();
 
             bufferedWriter = new BufferedWriter(new FileWriter(logFile, false));
+            writeMessage("New log file created: " + exists);
         } catch (IOException ex) {
             // TODO: Send message to error GUI
             ex.printStackTrace();

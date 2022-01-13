@@ -58,9 +58,11 @@ public class JNetPcapHandler extends PacketCapturer {
         }
 
         StringBuilder errbuf = new StringBuilder();
+        if (pcap != null) {
+            pcap.close();
+        }
         pcap = Pcap.openOffline(file.getPath(), errbuf);
         if (pcap == null) {
-            System.out.println("test");
             Logger.getLogger().writeMessage("Error (opening pcap): " + errbuf);
             return false;
         }
@@ -87,6 +89,9 @@ public class JNetPcapHandler extends PacketCapturer {
          * timeout - Amount of time to wait for reading packets before dispatching them
          * errbuf - Error message in case of errors
          */
+        if (pcap != null) {
+            pcap.close();
+        }
         pcap = Pcap.openLive(interfaceName, snaplen, promiscuous, timeout, errbuf);
         if (pcap == null ) {
             Logger.getLogger().writeMessage("Error (Opening interface): " + errbuf);
@@ -97,6 +102,7 @@ public class JNetPcapHandler extends PacketCapturer {
                 interfaces.get(interfaceID).getDescription());
         return true;
     }
+
 
     @Override
     public void startCapture() {
@@ -111,8 +117,10 @@ public class JNetPcapHandler extends PacketCapturer {
 
     @Override
     public void stopCapture() {
-        captureThread.interrupt();
-        captureThread = null;
+        if (captureThread != null) {
+            captureThread.interrupt();
+            captureThread = null;
+        }
     }
 
     @Override
@@ -177,5 +185,4 @@ public class JNetPcapHandler extends PacketCapturer {
         // Saves the file on the disk using provided filepath
         pcapDumper.flush();
     }
-
 }

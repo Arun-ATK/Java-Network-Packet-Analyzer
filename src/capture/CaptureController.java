@@ -10,9 +10,11 @@ import java.util.ArrayList;
 public class CaptureController {
     private static final PacketCapturer capturer = new JNetPcapHandler();
 
-    private static final ArrayList<Packet> packetHolder = new ArrayList<>();
+    private static ArrayList<Packet> packetHolder;
 
     static MainDataContainer dataContainer;
+    static boolean paused = false;
+
 
 
     public static ArrayList<NetworkInterface> getInterfaces() {
@@ -32,9 +34,20 @@ public class CaptureController {
 
     public static void startCapture(MainDataContainer dataContainer) {
         CaptureController.dataContainer = dataContainer;
+        packetHolder = new ArrayList<>();
+        paused = false;
+
+        AnalysisController.resetCount();
+        capturer.startCapture();
+    }
+    public static void resumeCapture() {
+        paused = false;
+
         capturer.startCapture();
     }
     public static void stopCapture() {
+        paused = true;
+
         capturer.stopCapture();
     }
 
@@ -54,5 +67,9 @@ public class CaptureController {
 
     public static void saveAsPcapFile(File file) {
         capturer.saveFile(file.getPath());
+    }
+
+    public static boolean isPaused() {
+        return paused;
     }
 }

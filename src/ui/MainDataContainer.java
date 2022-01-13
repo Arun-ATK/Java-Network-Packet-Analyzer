@@ -17,7 +17,6 @@ public class MainDataContainer extends JFrame {
         sysutil.SystemController.startCaptureLibrary();
         CaptureController.startCapture(MainDataContainer.this);
 
-
         // Closing the frame should first make a call to stop the underlying packet capture library
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
@@ -53,7 +52,7 @@ public class MainDataContainer extends JFrame {
             JFrame saveFileFrame = new JFrame("Save As...");
             saveFileFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            JFileChooser fileChooser = new JFileChooser("captures");
+            JFileChooser fileChooser = new JFileChooser(".");
             int result = fileChooser.showOpenDialog(saveFileFrame);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File saveFile = fileChooser.getSelectedFile();
@@ -65,6 +64,22 @@ public class MainDataContainer extends JFrame {
         fileMenu.add(openPcapFileMenuItem);
         fileMenu.add(saveAsPcapFileMenuItem);
 
+        // Menu for pausing/resuming capturing
+        JMenu captureMenu = new JMenu("Capture");
+        JMenuItem pauseResumeMenuItem = new JMenuItem("Pause");
+        pauseResumeMenuItem.setSize(20, 10);
+        pauseResumeMenuItem.addActionListener(e -> {
+            if (CaptureController.isPaused()) {
+                pauseResumeMenuItem.setText("Pause");
+                CaptureController.resumeCapture();
+            }
+            else {
+                pauseResumeMenuItem.setText("Resume");
+                CaptureController.stopCapture();
+            }
+        });
+        captureMenu.add(pauseResumeMenuItem);
+
         // Menu for displaying analytical information
         JMenu analyticsMenu = new JMenu("Analytics");
         JMenuItem openPacketCountMenuItem = new JMenuItem("Packet Count");
@@ -73,6 +88,7 @@ public class MainDataContainer extends JFrame {
 
 
         menuBar.add(fileMenu);
+        menuBar.add(captureMenu);
         menuBar.add(analyticsMenu);
 
         /* **********************************************

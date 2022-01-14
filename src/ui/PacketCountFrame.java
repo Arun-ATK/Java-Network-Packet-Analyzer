@@ -38,7 +38,6 @@ public class PacketCountFrame extends JFrame {
 
             defaultTableModel.addRow(new Object[] { key, value });
         }
-        // TODO: Get pure TCP/IP packet count
 
         packetCountTable.revalidate();
         packetCountTable.repaint();

@@ -39,7 +39,6 @@ public class PacketFactory {
                 String[] headerLines = http.header().split("\r\n");
                 Map<String, String> httpHeaders = new LinkedHashMap<>();
 
-                // TODO: Replace with own parsing
                 if (http.isResponse()) {
                     httpHeaders.put("Response Line", headerLines[0]);
                 }

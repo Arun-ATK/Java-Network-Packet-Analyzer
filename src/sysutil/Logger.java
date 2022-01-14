@@ -22,7 +22,6 @@ public class Logger {
             bufferedWriter = new BufferedWriter(new FileWriter(logFile, false));
             writeMessage("New log file created: " + exists);
         } catch (IOException ex) {
-            // TODO: Send message to error GUI
             ex.printStackTrace();
         }
     }

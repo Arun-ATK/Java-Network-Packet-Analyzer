@@ -10,8 +10,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Map;
 
-public class AnalyticsFrame extends JFrame {
-    public AnalyticsFrame() {
+public class PacketCountFrame extends JFrame {
+    public PacketCountFrame() {
         this.setTitle("Analytics");
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

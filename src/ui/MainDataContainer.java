@@ -85,9 +85,11 @@ public class MainDataContainer extends JFrame {
         // Menu for displaying analytical information
         JMenu analyticsMenu = new JMenu("Analytics");
         JMenuItem openPacketCountMenuItem = new JMenuItem("Packet Count");
-        openPacketCountMenuItem.addActionListener(e -> new AnalyticsFrame());
+        openPacketCountMenuItem.addActionListener(e -> new PacketCountFrame());
+        JMenuItem openPacketRateMenuItem = new JMenuItem("Packet Rate");
+        openPacketRateMenuItem.addActionListener(e -> new PacketRateFrame());
         analyticsMenu.add(openPacketCountMenuItem);
-
+        analyticsMenu.add(openPacketRateMenuItem);
 
         menuBar.add(fileMenu);
         menuBar.add(captureMenu);

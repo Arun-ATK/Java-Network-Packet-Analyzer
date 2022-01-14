@@ -23,6 +23,7 @@ public class MainDataContainer extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 closeWindow(MainDataContainer.this);
+                SystemController.stopCaptureLibrary();
                 System.exit(0);
             }
         });
@@ -115,14 +116,16 @@ public class MainDataContainer extends JFrame {
     }
 
     public static void closeWindow(JFrame frame) {
-        SystemController.stopCaptureLibrary();
         CaptureController.stopCapture();
         frame.dispose();
     }
 
     public void addPacket(int id, Packet packet) {
-       dataTable.addRow(id, packet);
-       dataTable.revalidate();
-       dataTable.repaint();
+//        if (dataTable == null) {
+//            dataTable = new DataTable();
+//        }
+        dataTable.addRow(id, packet);
+        dataTable.revalidate();
+        dataTable.repaint();
     }
 }

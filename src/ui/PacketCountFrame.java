@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class PacketCountFrame extends JFrame {
     public PacketCountFrame() {
-        this.setTitle("Analytics");
+        this.setTitle("Packet Count");
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         /* *************

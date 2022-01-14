@@ -5,6 +5,8 @@ import org.jnetpcap.nio.JMemory;
 import org.jnetpcap.packet.PcapPacket;
 import sysutil.Logger;
 
+import java.io.IOException;
+
 public class capturePacketTask implements Runnable {
     PacketCapturer packetCapturer;
     Pcap pcap;

@@ -6,6 +6,7 @@ import java.io.IOException;
 
 public class SystemController {
     private static OsCheck.OSType osType;
+    private static boolean captureLibraryRunning = false;
 
     public static void main(String[] args) {
         // Adding ShutDown hook to ensure logger safely closes it's output stream
@@ -41,12 +42,21 @@ public class SystemController {
 
     // Wrappers to starting and stopping necessary capture library
     public static void startCaptureLibrary() {
+        if (captureLibraryRunning) {
+            return;
+        }
         try {
             if (osType == OsCheck.OSType.Windows) {
                 startWinPcap();
-            } else {
-                Logger.getLogger().writeMessage("Unsupported OS");
-                System.exit(-1);
+                captureLibraryRunning = true;
+            }
+            else if (osType == OsCheck.OSType.Linux) {
+                Logger.getLogger().writeMessage("LibPcap");
+                captureLibraryRunning = true;
+            }
+            else {
+                    Logger.getLogger().writeMessage("Unsupported OS");
+                    System.exit(-1);
             }
         } catch (Exception e) {
             Logger.getLogger().writeMessage(e.getMessage());
@@ -58,10 +68,7 @@ public class SystemController {
             if (osType == OsCheck.OSType.Windows) {
                 stopWinPcap();
             }
-            else {
-                Logger.getLogger().writeMessage("Unsupported OS while closing");
-                System.exit(-1);
-            }
+            captureLibraryRunning = false;
         } catch (Exception e) {
             Logger.getLogger().writeMessage(e.getMessage());
         }

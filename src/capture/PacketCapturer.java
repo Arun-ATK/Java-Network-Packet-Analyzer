@@ -14,6 +14,7 @@ public abstract class PacketCapturer {
 
     public abstract void startCapture();
     public abstract void stopCapture();
+    public abstract void resetRawPackets();
 
     public abstract void addRawPacket(Object p);
     public abstract void parseRawPacket(Object p);

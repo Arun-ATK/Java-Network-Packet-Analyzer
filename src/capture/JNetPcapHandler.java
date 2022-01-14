@@ -4,7 +4,6 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapDumper;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
-import org.jnetpcap.protocol.network.Arp;
 import org.jnetpcap.protocol.network.Icmp;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.*;
@@ -16,23 +15,26 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class JNetPcapHandler extends PacketCapturer {
-    private ArrayList<PcapIf> interfaces;
-    private final ArrayList<PcapPacket> rawPackets = new ArrayList<>();
+    private ArrayList<PcapIf> interfaces = null;
+    private ArrayList<PcapPacket> rawPackets = new ArrayList<>();
     private Pcap pcap;
 
     @Override
     public ArrayList<NetworkInterface> getNetworkInterfaces() {
         StringBuilder errbuf = new StringBuilder();
-
-        interfaces = new ArrayList<>();
         ArrayList<NetworkInterface> networkInterfaces = new ArrayList<>();
 
-        int statusCode = Pcap.findAllDevs(interfaces, errbuf);
+        int statusCode = 0;
+        if (interfaces == null) {
+            interfaces = new ArrayList<>();
+            statusCode = Pcap.findAllDevs(interfaces, errbuf);
+        }
+
         if (statusCode != Pcap.OK) {
             Logger.getLogger().writeMessage("Error (finding interfaces): " + errbuf);
         }
         else {
-            Logger.getLogger().writeMessage(interfaces.size() + "Interfaces found on system");
+            Logger.getLogger().writeMessage(interfaces.size() + " Interfaces found on system");
 
             for (int i = 0; i < interfaces.size(); ++i) {
                 networkInterfaces.add(new NetworkInterface(
@@ -114,6 +116,10 @@ public class JNetPcapHandler extends PacketCapturer {
         else {
             Logger.getLogger().writeMessage("Already capturing packets!");
         }
+    }
+
+    public void resetRawPackets() {
+        rawPackets = new ArrayList<>();
     }
 
     @Override

@@ -79,10 +79,14 @@ public class PacketSourceSelector extends JFrame {
             selectSourceButton.setText("Select Interface");
             JComboBox<NetworkInterface> interfaceComboBox = new JComboBox<>();
 
-            ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
+            ArrayList<NetworkInterface> interfaces;
+            do {
+                interfaces = CaptureController.getInterfaces();
+            } while (interfaces.size() <= 0);
             for (NetworkInterface anInterface : interfaces) {
                 interfaceComboBox.addItem(anInterface);
             }
+
 
             selectedLabel.setText(interfaceComboBox.getItemAt(0).getDescription());
             interfaceComboBox.addItemListener(e -> {

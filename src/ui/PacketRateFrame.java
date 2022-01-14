@@ -38,7 +38,7 @@ public class PacketRateFrame extends JFrame {
         this.add(durationPanel);
         this.add(ratePanel);
 
-        this.pack();
+        this.setSize(275, 120);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }

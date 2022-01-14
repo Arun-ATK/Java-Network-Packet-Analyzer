@@ -38,8 +38,7 @@ public class Logger {
             bufferedWriter.write("\n-----------\n\n");
 
             bufferedWriter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 

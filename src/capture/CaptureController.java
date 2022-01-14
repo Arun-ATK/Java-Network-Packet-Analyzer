@@ -25,6 +25,7 @@ public class CaptureController {
     public static void startCapture(MainDataContainer dataContainer) {
         CaptureController.dataContainer = dataContainer;
         packetHolder = new ArrayList<>();
+        capturer.resetRawPackets();
         paused = false;
 
         AnalysisController.resetCount();

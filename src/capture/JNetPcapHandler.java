@@ -4,6 +4,8 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.PcapDumper;
 import org.jnetpcap.PcapIf;
 import org.jnetpcap.packet.PcapPacket;
+import org.jnetpcap.protocol.network.Arp;
+import org.jnetpcap.protocol.network.Icmp;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.*;
 
@@ -132,6 +134,7 @@ public class JNetPcapHandler extends PacketCapturer {
     @Override
     public void parseRawPacket(Object p) {
         if (p instanceof PcapPacket pcapPacket) {
+            Icmp icmp = new Icmp();
             Ip4 ip = new Ip4();
 
             Tcp tcp = new Tcp();
@@ -155,6 +158,9 @@ public class JNetPcapHandler extends PacketCapturer {
                 }
                 else if (pcapPacket.hasHeader(udp)) {
                     packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.UDP);
+                }
+                else if (pcapPacket.hasHeader(icmp)) {
+                    packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.ICMP);
                 }
 
                 // Unsupported IP Packet

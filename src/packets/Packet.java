@@ -9,6 +9,7 @@ public abstract class Packet {
         TCP,
         UDP,
         IP,
+        ICMP,
         Unknown
     }
 

@@ -3,6 +3,7 @@ package capture;
 import org.jnetpcap.nio.JBuffer;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.format.FormatUtils;
+import org.jnetpcap.protocol.network.Icmp;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.protocol.tcpip.Tcp;
@@ -96,6 +97,19 @@ public class PacketFactory {
             }
             case IP -> {
                 Map<String, String> ipHeaders = getIpHeaders(p);
+
+                return new NetworkPacket(ipHeaders, hexdump,
+                        receiveDate, size, headerSize, protocol);
+            }
+            case ICMP -> {
+                Map<String, String> ipHeaders = getIpHeaders(p);
+                Icmp icmp = new Icmp();
+                p.getHeader(icmp);
+
+                ipHeaders.put("ICMP Type", String.valueOf(icmp.type()));
+                ipHeaders.put("ICMP Code", String.valueOf(icmp.code()));
+                ipHeaders.put("ICMP Checksum", String.valueOf(icmp.checksum()));
+                ipHeaders.put("ICMP Data", new String(icmp.getPayload()));
 
                 return new NetworkPacket(ipHeaders, hexdump,
                         receiveDate, size, headerSize, protocol);

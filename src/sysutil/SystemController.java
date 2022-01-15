@@ -1,8 +1,11 @@
 package sysutil;
 
+import capture.CaptureController;
+import capture.NetworkInterface;
 import ui.StartScreen;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SystemController {
     private static OsCheck.OSType osType;
@@ -14,18 +17,29 @@ public class SystemController {
 
         Logger.getLogger().writeMessage("Java Packet Sniffer starting...");
 
-        try {
-            System.loadLibrary("jnetpcap");
-            Logger.getLogger().writeMessage("JNetPcap Loaded");
-        } catch (Exception exception) {
-            Logger.getLogger().writeMessage(exception.getMessage());
-            System.exit(-1);
-        }
-
         osType = OsCheck.getOperatingSystemType();
         Logger.getLogger().writeMessage("Detected OS: " + osType);
 
-        new StartScreen();
+        try {
+            if (osType == OsCheck.OSType.Windows) {
+                System.loadLibrary("jnetpcap");
+                Logger.getLogger().writeMessage("WIN: jNetPcap Loaded");
+            }
+            else if (osType == OsCheck.OSType.Linux) {
+                System.loadLibrary("jnetpcap");
+                Logger.getLogger().writeMessage("LINUX: jNetPcap Loaded");
+            }
+        } catch (Exception | Error e) {
+            Logger.getLogger().writeMessage(e.getMessage());
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+//        new StartScreen();
+        ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
+        for (NetworkInterface anInterface : interfaces) {
+            System.out.println("- " + anInterface.getDescription());
+        }
     }
 
     private static void startWinPcap() throws IOException {

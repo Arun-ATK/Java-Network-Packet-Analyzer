@@ -79,10 +79,12 @@ public class PacketSourceSelector extends JFrame {
             selectSourceButton.setText("Select Interface");
             JComboBox<NetworkInterface> interfaceComboBox = new JComboBox<>();
 
-            ArrayList<NetworkInterface> interfaces;
-            do {
-                interfaces = CaptureController.getInterfaces();
-            } while (interfaces.size() <= 0);
+            ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
+
+            if (interfaces.size() == 0) {
+                new ErrorScreen("Run program as administrator!", true);
+
+            }
             for (NetworkInterface anInterface : interfaces) {
                 interfaceComboBox.addItem(anInterface);
             }
@@ -113,7 +115,7 @@ public class PacketSourceSelector extends JFrame {
                     allGood = CaptureController.openPcapFile(selectedFile);
                 }
                 else {
-                    new ErrorScreen("No file selected!");
+                    new ErrorScreen("No file selected!", false);
                     Logger.getLogger().writeMessage("No file selected");
                 }
             }

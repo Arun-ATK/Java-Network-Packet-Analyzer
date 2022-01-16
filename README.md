@@ -23,11 +23,16 @@ Download the latest version from [releases](https://github.com/Arun-ATK/Java-Net
 sudo apt-get install libpcap-dev
 ```
 
-* Copy `libjnetpcap.so` and `libjnetpcap.so.0` to `/usr/lib` (Requires sudo permissions).
+* Copy `libjnetpcap.so.0` to `/usr/lib` (Requires sudo permissions).
 * Alternatively, type the following command (Must be done each time terminal is opened)
 
 ```bash
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/Path/to/application/Directory
+```
+
+* Create a link to `libjnetpcap.so.0` in the same directory
+```bash
+ln -s libjnetpcap.so.0 libjnetpcap.so
 ```
 
 ## Usage

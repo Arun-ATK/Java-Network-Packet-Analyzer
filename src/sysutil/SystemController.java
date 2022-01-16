@@ -35,11 +35,7 @@ public class SystemController {
             System.exit(-1);
         }
 
-//        new StartScreen();
-        ArrayList<NetworkInterface> interfaces = CaptureController.getInterfaces();
-        for (NetworkInterface anInterface : interfaces) {
-            System.out.println("- " + anInterface.getDescription());
-        }
+        new StartScreen();
     }
 
     private static void startWinPcap() throws IOException {

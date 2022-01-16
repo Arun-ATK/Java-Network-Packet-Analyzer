@@ -156,6 +156,10 @@ public class JNetPcapHandler extends PacketCapturer {
                             packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.HTTP);
                         }
                     }
+                    else if((tcp.source() == 443 || tcp.destination() == 443)
+                            && tcp.getPayload().length > 0) {
+                        packet = PacketFactory.createPacket(pcapPacket, Packet.Protocol.HTTPS);
+                    }
 
                     // Unsupported TCP Packet
                     else {

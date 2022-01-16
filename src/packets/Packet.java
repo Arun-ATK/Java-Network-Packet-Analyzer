@@ -10,6 +10,7 @@ public abstract class Packet {
         UDP,
         IP,
         ICMP,
+        HTTPS,
         Unknown
     }
 

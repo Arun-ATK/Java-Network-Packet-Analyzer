@@ -70,7 +70,7 @@ public class PacketFactory {
                         hexdump, receiveDate, size, headerSize,
                         protocol);
             }
-            case TCP -> {
+            case TCP, HTTPS -> {
                 Map<String, String> ipHeaders = getIpHeaders(p);
                 Map<String, String> tcpHeaders = getTcpHeaders(p);
 

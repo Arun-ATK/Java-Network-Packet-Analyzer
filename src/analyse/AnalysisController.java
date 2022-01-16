@@ -41,10 +41,15 @@ public class AnalysisController {
         return currentTime.getTime() - startTime.getTime();
     }
 
-    public static void resetCount() {
-        packetCounts = new EnumMap<>(Packet.Protocol.class);
+    public static void resetAnalytics() {
+        resetCount();
+        resetStartTime();
     }
-    public static void resetStartTime() {
+    private static void resetCount() {
+        packetCounts = new EnumMap<>(Packet.Protocol.class);
+        totalPackets = 0;
+    }
+    private static void resetStartTime() {
         startTime = null;
     }
 }

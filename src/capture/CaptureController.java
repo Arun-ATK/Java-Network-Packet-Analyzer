@@ -28,7 +28,7 @@ public class CaptureController {
         capturer.resetRawPackets();
         paused = false;
 
-        AnalysisController.resetCount();
+        AnalysisController.resetAnalytics();
         capturer.startCapture();
     }
 

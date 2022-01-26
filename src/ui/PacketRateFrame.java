@@ -14,7 +14,9 @@ public class PacketRateFrame extends JFrame {
 
         int count = AnalysisController.getTotalPackets();
         long duration = TimeUnit.MILLISECONDS.toSeconds(AnalysisController.getElapsedTime());
-        float rate = AnalysisController.getPacketRate();
+        float packetRate = AnalysisController.getPacketRate();
+        float sizeMB = AnalysisController.getTotalSize() / (1024 * 8);
+        float transferRate = AnalysisController.getTransferRate();
 
         JPanel countPanel = new JPanel();
         JLabel countLabel = new JLabel("    Packet count: ");
@@ -24,21 +26,36 @@ public class PacketRateFrame extends JFrame {
 
         JPanel durationPanel = new JPanel();
         JLabel durationLabel = new JLabel("    Time Elapsed: ");
-        JLabel durationValueLabel = new JLabel(duration + "    ");
+        JLabel durationValueLabel = new JLabel(duration + "s    ");
         durationPanel.add(durationLabel);
         durationPanel.add(durationValueLabel);
 
         JPanel ratePanel = new JPanel();
         JLabel rateLabel = new JLabel("    Rate: ");
-        JLabel rateValueLabel = new JLabel(rate + "    ");
+        JLabel rateValueLabel = new JLabel(packetRate + " P/s    ");
         ratePanel.add(rateLabel);
         ratePanel.add(rateValueLabel);
+
+        JPanel totalDataPanel = new JPanel();
+        JLabel totalDataLabel = new JLabel("    Total transferred data: ");
+        JLabel totalDataValue = new JLabel(sizeMB + " MB    ");
+        totalDataPanel.add(totalDataLabel);
+        totalDataPanel.add(totalDataValue);
+
+        JPanel dataRatePanel = new JPanel();
+        JLabel dataRateLabel = new JLabel(" Transfer rate: ");
+        JLabel dataRateValue = new JLabel(transferRate + "MB/s    ");
+        dataRatePanel.add(dataRateLabel);
+        dataRatePanel.add(dataRateValue);
 
         this.add(countPanel);
         this.add(durationPanel);
         this.add(ratePanel);
+        this.add(new JPanel());
+        this.add(totalDataPanel);
+        this.add(dataRatePanel);
 
-        this.setSize(275, 120);
+        this.setSize(275, 180);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
